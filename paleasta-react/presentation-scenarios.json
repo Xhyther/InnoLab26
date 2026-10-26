@@ -1,0 +1,188 @@
+[
+  {
+    "id": "cash-flow",
+    "title": "Cash flow",
+    "question": "Can I spend ₱5,000 this week without affecting bills and loan payments?",
+    "answer": [
+      [
+        "h3",
+        "The recorded balance covers the plan"
+      ],
+      [
+        "p",
+        "Your current recorded balance is ₱173,002.00. A ₱5,000.00 purchase plus the known ₱5,000.00 of upcoming installments would leave ₱163,002.00 before other bills."
+      ],
+      [
+        "h3",
+        "Keep the repayment reserve"
+      ],
+      [
+        "p",
+        "Set aside ₱3,500.00 for October 30 and ₱1,500.00 for November 2. The outstanding loan principal is already reflected through its recorded proceeds; do not subtract the whole ₱45,000.00 again."
+      ],
+      [
+        "h3",
+        "Use a small trial order"
+      ],
+      [
+        "p",
+        "Compare supplier cost and expected demand before committing. This plan uses the prototype’s ₱0 opening balance and assumes the recorded cash movements are complete."
+      ]
+    ]
+  },
+  {
+    "id": "restocking",
+    "title": "Restocking",
+    "question": "Which products should I restock first, and how much can I budget?",
+    "answer": [
+      [
+        "h3",
+        "Top up Coke and cooking oil first"
+      ],
+      [
+        "p",
+        "Coke 1.5 L has 8 bottles against a restock point of 10. Cooking oil 1 L has 6 against 10. Check the shelf count before ordering."
+      ],
+      [
+        "h3",
+        "A small top-up costs ₱420.00"
+      ],
+      [
+        "p",
+        "Two Coke bottles at ₱40.00 cost ₱80.00; four oil bottles at ₱85.00 cost ₱340.00. This reaches the recorded restock points without assuming future demand."
+      ],
+      [
+        "h3",
+        "Keep the repayment reserve"
+      ],
+      [
+        "p",
+        "Using the ₱173,002.00 recorded balance, the ₱420.00 order and a ₱5,000.00 installment reserve leave ₱167,582.00 before other bills. Use recent product sales to decide whether a larger order makes sense."
+      ]
+    ]
+  },
+  {
+    "id": "pricing",
+    "title": "Pricing & margins",
+    "question": "Should I increase my selling price for cooking oil?",
+    "answer": [
+      [
+        "h3",
+        "Test a small change before committing"
+      ],
+      [
+        "p",
+        "The recorded buying cost is ₱85.00 and selling price is ₱100.00 per bottle. That leaves ₱15.00 unit gross margin before other expenses."
+      ],
+      [
+        "h3",
+        "Compare two prices"
+      ],
+      [
+        "p",
+        "At ₱110.00, unit gross margin would be ₱25.00: ₱10.00 more per bottle, or about 22.7% of the selling price. This is an illustration, not a profit forecast."
+      ],
+      [
+        "h3",
+        "Check what customers will accept"
+      ],
+      [
+        "p",
+        "Confirm the latest supplier quote, competitor prices, sales volume and other costs. You have 6 bottles recorded; use a short price test and track units sold before changing the regular price."
+      ]
+    ]
+  },
+  {
+    "id": "repayment",
+    "title": "Loan repayments",
+    "question": "Can my business cover its next loan repayment?",
+    "answer": [
+      [
+        "h3",
+        "The recorded balance covers the next payments"
+      ],
+      [
+        "p",
+        "Using your ₱173,002.00 recorded balance, reserve ₱3,500.00 for the sample cooperative loan due October 30, 2026."
+      ],
+      [
+        "h3",
+        "Include the November 2 installment"
+      ],
+      [
+        "p",
+        "The sample working-capital loan has ₱1,500.00 due November 2. Together, the two scheduled installments total ₱5,000.00."
+      ],
+      [
+        "h3",
+        "That leaves ₱168,002.00 before other bills"
+      ],
+      [
+        "p",
+        "These are scheduled commitments, not recorded payments. Once paid, record the actual cash outflow. Do not subtract the full outstanding loan principal again; this plan assumes a ₱0 opening balance and complete cash records."
+      ]
+    ]
+  },
+  {
+    "id": "expansion",
+    "title": "Business expansion",
+    "question": "Can I afford an ₱18,000 refrigerator for a new beverage line?",
+    "answer": [
+      [
+        "h3",
+        "Budget for the refrigerator and repayments"
+      ],
+      [
+        "p",
+        "Your recorded balance is ₱173,002.00. An ₱18,000.00 refrigerator plus a ₱5,000.00 installment reserve would leave ₱150,002.00 before delivery, electricity and other bills."
+      ],
+      [
+        "h3",
+        "Check the ongoing cost"
+      ],
+      [
+        "p",
+        "Confirm the supplier quote, delivery, expected electricity use and repair costs. Borrowed funds are included in your balance and should still support a plan to repay the loans."
+      ],
+      [
+        "h3",
+        "Test the beverage demand"
+      ],
+      [
+        "p",
+        "Use recent drink sales and unit margins to compare buying now with a smaller trial. The arithmetic uses the prototype’s ₱0 opening balance; it is not a revenue forecast."
+      ]
+    ]
+  },
+  {
+    "id": "passport",
+    "title": "Financial Passport",
+    "question": "What is missing from my portfolio before I approach a bank?",
+    "answer": [
+      [
+        "h3",
+        "Strengthen the supporting records"
+      ],
+      [
+        "p",
+        "The May–October 2026 sample has 317 transactions across 154 recorded days and 6 products valued at ₱4,816.00 at recorded cost. Expense receipt filename coverage is 68%; the files and figures have not been independently verified."
+      ],
+      [
+        "h3",
+        "Explain the financing clearly"
+      ],
+      [
+        "p",
+        "Show ₱45,000.00 of loan proceeds separately from other inflows. Include statements and schedules for the ₱45,000.00 owner-reported outstanding loan balances."
+      ],
+      [
+        "h3",
+        "Prepare the next version"
+      ],
+      [
+        "p",
+        "Review days without entries, reconcile records, confirm stock and complete business details. Ask your chosen bank for its actual document checklist. The Financial Passport organizes the portfolio; the bank decides eligibility and approval."
+      ]
+    ]
+  }
+]

@@ -1,0 +1,76 @@
+import { test, expect } from "@playwright/test";
+
+test("LEA mascot cycles during a pending response and the two panes scroll independently",async({page})=>{
+  await page.clock.install();
+  let finish=()=>{};
+  const pending=new Promise<void>(resolve=>{finish=resolve;});
+  await page.route("**/api/chat",async route=>{await pending;await route.fulfill({json:{html:"<h3>Review your plan</h3>"+Array.from({length:18},()=>"<p>Compare verified cash, current stock and upcoming loan repayments before deciding.</p>").join("")}});});
+  await page.goto("/#/app/adviser");
+  await expect(page.getByText("Let’s think through your next step")).toHaveCount(0);
+  await page.getByRole("button",{name:"Cash flow",exact:true}).click();
+  const input=page.getByLabel("Your question or business goal");
+  await expect(input).toBeFocused();
+  await expect(page.locator(".adviser-input").getByRole("button",{name:"Send message",exact:true})).toBeVisible();
+  const note=page.locator(".adviser-footnote");
+  expect(await note.evaluate(el=>el.getBoundingClientRect().height)).toBeLessThan(25);
+  const noteBox=(await note.boundingBox())!, sendBox=(await page.getByRole("button",{name:"Send message",exact:true}).boundingBox())!;
+  expect(Math.abs(noteBox.y+noteBox.height/2-sendBox.y-sendBox.height/2)).toBeLessThan(2);
+  await expect(input).not.toHaveValue("");
+  await input.fill("Compare two restock plans.");
+  const initialHeight=(await input.boundingBox())!.height;
+  await input.press("Shift+Enter");
+  await input.pressSequentially("Keep upcoming loan repayments covered.");
+  await expect(input).toHaveValue("Compare two restock plans.\nKeep upcoming loan repayments covered.");
+  await expect.poll(async()=>(await input.boundingBox())!.height).toBeGreaterThan(initialHeight);
+  await input.press("Enter");
+  const thinking=page.locator(".thinking-indicator");
+  await expect(thinking).toBeVisible();
+  await expect(thinking.locator("img")).toBeVisible();
+  await expect(thinking).toContainText("LEA is thinking…");
+  await page.clock.runFor(2000);await expect(thinking).toContainText("LEA is pondering…");
+  await page.clock.runFor(2000);await expect(thinking).toContainText("LEA is computing…");
+  await page.screenshot({path:"test-results/adviser-thinking.png",animations:"disabled"});
+  finish();
+  await expect(thinking).toHaveCount(0);
+  await expect(page.locator(".lea-answer")).toBeVisible();
+  const chat=page.getByRole("log",{name:"Conversation with LEA"}),context=page.getByRole("region",{name:"Business context and question suggestions"});
+  await context.locator("details").evaluateAll(ds=>ds.forEach(d=>{d.open=true;}));
+  await chat.evaluate(el=>{el.scrollTop=0;});
+  await context.evaluate(el=>{el.scrollTop=0;});
+  await context.hover();await page.mouse.wheel(0,500);
+  await expect.poll(()=>context.evaluate(el=>el.scrollTop)).toBeGreaterThan(0);
+  expect(await chat.evaluate(el=>el.scrollTop)).toBe(0);
+  const sideTop=await context.evaluate(el=>el.scrollTop);
+  await chat.hover();await page.mouse.wheel(0,500);
+  await expect.poll(()=>chat.evaluate(el=>el.scrollTop)).toBeGreaterThan(0);
+  expect(await context.evaluate(el=>el.scrollTop)).toBe(sideTop);
+  expect(await page.evaluate(()=>window.scrollY)).toBe(0);
+  await page.screenshot({path:"test-results/adviser-independent-scroll.png",animations:"disabled"});
+});
+
+test("new loan modal records financing cash, shows its due date, and persists",async({page})=>{
+  await page.goto("/#/app/transactions");
+  await page.getByRole("button",{name:"Add business loan",exact:true}).click();
+  const dialog=page.getByRole("dialog",{name:"Record business loan"});
+  await dialog.getByLabel("Lender / loan label").fill("Presentation lender");
+  await dialog.getByLabel("Outstanding loan balance (PHP)").fill("10000");
+  await dialog.getByLabel("Net cash received (PHP)").fill("9500");
+  await dialog.getByLabel("Scheduled repayment (PHP)").fill("1000");
+  await dialog.getByLabel("Funds received / balance as of").fill("2026-10-27");
+  await dialog.getByLabel("Next payment due").fill("2026-11-02");
+  await dialog.screenshot({path:"test-results/loan-modal.png",animations:"disabled"});
+  await dialog.getByRole("button",{name:"Save loan record"}).click();
+  await expect(dialog).toHaveCount(0);
+  const row=page.getByRole("row").filter({hasText:"Loan proceeds · Presentation lender"});
+  await expect(row).toContainText("Cash inflow · financing");
+  await expect(row).toContainText("+₱9,500.00");
+  await expect(row).toContainText(/Due/);
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("paleasta-prototype-v1")!));
+  expect(saved.transactions).toHaveLength(318);
+  expect(saved.loans).toHaveLength(3);
+  expect(saved.transactions[0]).toMatchObject({cashKind:"loan_disbursement",amountCents:950000});
+  await page.reload();
+  await expect(page.getByRole("row").filter({hasText:"Presentation lender"})).toBeVisible();
+});
+
+
