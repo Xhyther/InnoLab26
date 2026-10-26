@@ -1,0 +1,576 @@
+﻿@page "/"
+@using MudBlazor
+
+<PageTitle>PaLEASta! | Every Transaction Tells Your Story</PageTitle>
+
+<div style="background:#F8FAF7; color:#1F3028;">
+
+    @* Hero Section *@
+    <MudContainer MaxWidth="MaxWidth.Large"
+                  Class="pt-16 pb-16"
+                  Style="min-height:540px;">
+
+        <MudGrid Spacing="6" Class="align-center">
+
+            @* Hero Content *@
+            <MudItem xs="12" md="6">
+                <MudChip T="string"
+                         Color="Color.Success"
+                         Variant="Variant.Text"
+                         Size="Size.Small"
+                         Class="mb-5 rounded-pill"
+                         Style="font-weight:700; letter-spacing:1px; background:#DDF3E7; padding:8px 12px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Storefront"
+                             Size="Size.Small"
+                             Class="mr-2" />
+                    BUILT FOR FILIPINO SMALL BUSINESSES
+                </MudChip>
+
+                <MudText Typo="Typo.h1"
+                         Class="mb-5"
+                         Style="color:#1F3028; line-height:1.12; letter-spacing:-1.5px;">
+                    Your hard work has a story.
+                    <span style="display:block; color:#176B50;">
+                        Make every peso count.
+                    </span>
+                </MudText>
+
+                <MudText Typo="Typo.body1"
+                         Class="mb-7"
+                         Style="color:#65746B; font-size:1.08rem; line-height:1.8; max-width:480px;">
+                    Track your store's finances, get practical AI business
+                    advice, and build a clearer financial record—all in one
+                    simple place.
+                </MudText>
+
+                <div class="d-flex flex-wrap align-center gap-3 mb-7">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               DisableElevation="true"
+                               EndIcon="@Icons.Material.Filled.ArrowForward"
+                               Href="/transactions"
+                               Style="border-radius:10px; padding:12px 24px; font-weight:600;">
+                        Create your free account
+                    </MudButton>
+
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               EndIcon="@Icons.Material.Filled.OpenInNew"
+                               Href="/overview"
+                               Style="border-radius:10px; padding:12px 20px;">
+                        View dashboard
+                    </MudButton>
+                </div>
+
+                <div class="d-flex flex-wrap align-center gap-4"
+                     style="color:#65746B; font-size:0.84rem;">
+                    <div class="d-flex align-center gap-2">
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                                 Color="Color.Success"
+                                 Size="Size.Small" />
+                        Simple daily records
+                    </div>
+                    <div class="d-flex align-center gap-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Shield"
+                                 Color="Color.Success"
+                                 Size="Size.Small" />
+                        Evidence-aware reports
+                    </div>
+                </div>
+            </MudItem>
+
+            @* Dashboard Preview *@
+            <MudItem xs="12" md="6">
+                <MudPaper Elevation="0"
+                          Class="pa-4 pa-md-6"
+                          Style="border:1px solid #E1E8E1; border-radius:18px; background:#FFFFFF; box-shadow:0 20px 55px rgba(24,53,43,0.09);">
+
+                    @* Preview Header *@
+                    <div class="d-flex align-center justify-space-between mb-4">
+                        <div class="d-flex align-center gap-2">
+                            <MudAvatar Size="Size.Medium"
+                                       Color="Color.Success"
+                                       Variant="Variant.Text">
+                                    <MudIcon Icon="@Icons.Material.Filled.Storefront"
+                                         Size="Size.Medium" />
+                            </MudAvatar>
+                            <div>
+                                <MudText Typo="Typo.subtitle1"
+                                         Style="font-weight:800; color:#176B50;">
+                                    PaLEAsta!
+                                </MudText>
+                                <MudText Typo="Typo.caption"
+                                         Style="color:#65746B;">
+                                    Business overview
+                                </MudText>
+                            </div>
+                        </div>
+
+                        <MudChip T="string"
+                                 Size="Size.Small"
+                                 Variant="Variant.Outlined"
+                                 Color="Color.Success">
+                            Sample data
+                        </MudChip>
+                    </div>
+
+                    <MudDivider Class="mb-4" />
+
+                    <MudText Typo="Typo.h6"
+                             Style="font-weight:700; color:#1F3028;">
+                        Good morning!
+                    </MudText>
+
+                    <MudText Typo="Typo.body2"
+                             Class="mb-4"
+                             Style="color:#65746B;">
+                        Aling Nena's Sari-Sari Store
+                    </MudText>
+
+                    @* Summary Cards *@
+                    <MudGrid Spacing="3">
+                        <MudItem xs="6" sm="4">
+                            <MudPaper Elevation="0"
+                                      Class="pa-3"
+                                      Style="height:100%; border:1px solid #E1E8E1; border-radius:12px; background:#F8FAF7;">
+                                <MudAvatar Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Style="background:#DDF3E7; color:#176B50;">
+                                    <MudIcon Icon="@Icons.Material.Filled.TrendingUp"
+                                             Size="Size.Small" />
+                                </MudAvatar>
+                                <MudText Typo="Typo.caption"
+                                         Class="mt-3"
+                                         Style="color:#65746B;">
+                                    Recorded sales
+                                </MudText>
+                                <MudText Typo="Typo.h6"
+                                         Style="font-weight:800; color:#176B50;">
+                                    ₱45,000
+                                </MudText>
+                            </MudPaper>
+                        </MudItem>
+
+                        <MudItem xs="6" sm="4">
+                            <MudPaper Elevation="0"
+                                      Class="pa-3"
+                                      Style="height:100%; border:1px solid #E1E8E1; border-radius:12px; background:#FFFBF3;">
+                                <MudAvatar Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Style="background:#FFF0D6; color:#A85D08;">
+                                    <MudIcon Icon="@Icons.Material.Filled.ReceiptLong"
+                                             Size="Size.Small" />
+                                </MudAvatar>
+                                <MudText Typo="Typo.caption"
+                                         Class="mt-3"
+                                         Style="color:#65746B;">
+                                    Expenses
+                                </MudText>
+                                <MudText Typo="Typo.h6"
+                                         Style="font-weight:800; color:#A85D08;">
+                                    ₱8,500
+                                </MudText>
+                            </MudPaper>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="4">
+                            <MudPaper Elevation="0"
+                                      Class="pa-3"
+                                      Style="height:100%; border:1px solid #E1E8E1; border-radius:12px; background:#F0F8F3;">
+                                <MudAvatar Size="Size.Small"
+                                           Variant="Variant.Text"
+                                           Style="background:#DDF3E7; color:#176B50;">
+                                    <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet"
+                                             Size="Size.Small" />
+                                </MudAvatar>
+                                <MudText Typo="Typo.caption"
+                                         Class="mt-3"
+                                         Style="color:#65746B;">
+                                    Difference
+                                </MudText>
+                                <MudText Typo="Typo.h6"
+                                         Style="font-weight:800; color:#176B50;">
+                                    ₱36,500
+                                </MudText>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+
+                    @* Recent Transactions *@
+                    <MudPaper Elevation="0"
+                              Class="mt-4 pa-3"
+                              Style="border:1px solid #E1E8E1; border-radius:12px;">
+
+                        <div class="d-flex align-center justify-space-between mb-3">
+                            <MudText Typo="Typo.subtitle2"
+                                     Style="font-weight:700;">
+                                Recent transactions
+                            </MudText>
+                            <MudText Typo="Typo.caption"
+                                     Style="color:#65746B;">
+                                Example
+                            </MudText>
+                        </div>
+
+                        <MudTable T="PreviewTransaction"
+                                  Items="_previewTransactions"
+                                  Dense="true"
+                                  Hover="true"
+                                  Elevation="0"
+                                  Breakpoint="Breakpoint.Sm"
+                                  Style="background:transparent;">
+                            <HeaderContent>
+                                <MudTh>Date</MudTh>
+                                <MudTh>Description</MudTh>
+                                <MudTh Align="Align.Right">Amount</MudTh>
+                                <MudTh>Evidence</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Date">
+                                    <MudText Typo="Typo.caption">
+                                        @context.Date
+                                    </MudText>
+                                </MudTd>
+                                <MudTd DataLabel="Description">
+                                    <MudText Typo="Typo.body2">
+                                        @context.Description
+                                    </MudText>
+                                </MudTd>
+                                <MudTd DataLabel="Amount" Align="Align.Right">
+                                    <MudText Typo="Typo.body2"
+                                             Style="@($"font-weight:600; color:{(context.IsIncome ? "#176B50" : "#A85D08")};")">
+                                        @(context.IsIncome ? "+" : "−") ₱@context.Amount.ToString("N0")
+                                    </MudText>
+                                </MudTd>
+                                <MudTd DataLabel="Evidence">
+                                    <MudIcon Icon="@(context.HasEvidence
+                                                     ? Icons.Material.Filled.CheckCircle
+                                                     : Icons.Material.Filled.HelpOutline)"
+                                             Color="@(context.HasEvidence
+                                                     ? Color.Success
+                                                     : Color.Default)"
+                                             Size="Size.Small" />
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudPaper>
+
+                    @* Honest evidence notice *@
+                    <div class="d-flex align-start gap-2 mt-4"
+                         style="color:#65746B;">
+                        <MudIcon Icon="@Icons.Material.Filled.Info"
+                                 Color="Color.Success"
+                                 Size="Size.Small" />
+                        <MudText Typo="Typo.caption">
+                            Illustrative figures only. Financial indicators
+                            depend on recorded transactions and available evidence.
+                        </MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+
+    @* Audience Banner — moved below Features *@
+    <div style="background:#153F30; color:#FFFFFF;">
+        <MudContainer MaxWidth="MaxWidth.Large"
+                      Class="py-8 d-flex flex-column align-center text-center">
+
+            <MudText Typo="Typo.overline"
+                     Class="mb-5"
+                     Style="letter-spacing:2px; color:#B4EBD0; font-weight:700;">
+                BUILT FOR THE BUSINESSES THAT KEEP OUR COMMUNITIES MOVING
+            </MudText>
+
+            <div class="d-flex flex-wrap justify-center align-center gap-5 gap-md-8"
+                 style="font-size:0.9rem; font-weight:600;">
+
+                <div class="d-flex align-center gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Storefront"
+                             Style="color:#B4EBD0;" />
+                    Sari-sari stores
+                </div>
+
+                <MudIcon Icon="@Icons.Material.Filled.Circle"
+                         Size="Size.Small"
+                         Style="font-size:5px; color:#B4EBD0;" />
+
+                <div class="d-flex align-center gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.ShoppingBasket"
+                             Style="color:#B4EBD0;" />
+                    Market vendors
+                </div>
+
+                <MudIcon Icon="@Icons.Material.Filled.Circle"
+                         Size="Size.Small"
+                         Style="font-size:5px; color:#B4EBD0;" />
+
+                <div class="d-flex align-center gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Home"
+                             Style="color:#B4EBD0;" />
+                    Home-based sellers
+                </div>
+
+                <MudIcon Icon="@Icons.Material.Filled.Circle"
+                         Size="Size.Small"
+                         Style="font-size:5px; color:#B4EBD0;" />
+
+                <div class="d-flex align-center gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.ShoppingBag"
+                             Style="color:#B4EBD0;" />
+                    Micro retailers
+                </div>
+
+            </div>
+        </MudContainer>
+    </div>
+    
+    @* Features Section *@
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-16 my-4">
+    <MudGrid Spacing="6">
+
+        @* Section Introduction *@
+        <MudItem xs="12" md="5">
+            <MudText Typo="Typo.overline"
+                     Class="mb-4"
+                     Style="letter-spacing:1.5px; color:#176B50; font-weight:800;">
+                YOUR BUSINESS, ORGANIZED
+            </MudText>
+
+            <MudText Typo="Typo.h3"
+                     Style="font-weight:750; color:#1F3028; line-height:1.2; letter-spacing:-0.8px;">
+                Managing your daily sales shouldn't feel like a second job.
+            </MudText>
+
+            <MudText Typo="Typo.body1"
+                     Class="mt-4"
+                     Style="color:#65746B; line-height:1.8;">
+                Manual tracking wastes time, risks lost data, 
+                and makes it hard to see the big picture. 
+                Bring your scattered records into one simple
+                app to instantly understand your position 
+                and get AI-driven advice on your next move.
+            </MudText>
+        </MudItem>
+
+        
+        @* Feature List *@
+        <MudItem xs="12" md="7">
+            <div class="d-flex flex-column gap-6">
+
+                @* Feature 1 *@
+                <div class="d-flex align-start gap-4 pb-6"
+                     style="border-bottom:1px solid #E1E8E1;">
+
+                    <MudAvatar Variant="Variant.Text"
+                               Size="Size.Large"
+                               Style="background:#DDF3E7; color:#176B50;">
+                        <MudIcon Icon="@Icons.Material.Filled.Payments"
+                                 Style="color:#176B50;" />
+                    </MudAvatar>
+
+                    <div>
+                        <MudText Typo="Typo.h6"
+                                 Style="color:#1F3028; font-weight:700;">
+                            Track every peso
+                        </MudText>
+
+                        <MudText Typo="Typo.body2"
+                                 Style="color:#65746B; line-height:1.8;">
+                            Record daily sales and expenses, and see which
+                            entries have supporting evidence.
+                        </MudText>
+                    </div>
+                </div>
+
+                @* Feature 2 *@
+                <div class="d-flex align-start gap-4 pb-6"
+                     style="border-bottom:1px solid #E1E8E1;">
+
+                    <MudAvatar Variant="Variant.Text"
+                               Size="Size.Large"
+                               Style="background:#DDF3E7; color:#176B50;">
+                        <MudIcon Icon="@Icons.Material.Filled.Lightbulb"
+                                 Style="color:#176B50;" />
+                    </MudAvatar>
+
+                    <div>
+                        <MudText Typo="Typo.h6"
+                                 Style="color:#1F3028; font-weight:700;">
+                            Get practical guidance
+                        </MudText>
+
+                        <MudText Typo="Typo.body2"
+                                 Style="color:#65746B; line-height:1.8;">
+                            Turn recorded activity into prioritized,
+                            understandable insights and actionable next steps.
+                        </MudText>
+                    </div>
+                </div>
+
+                @* Feature 3 *@
+                <div class="d-flex align-start gap-4 pb-6"
+                     style="border-bottom:1px solid #E1E8E1;">
+
+                    <MudAvatar Variant="Variant.Text"
+                               Size="Size.Large"
+                               Style="background:#DDF3E7; color:#176B50;">
+                        <MudIcon Icon="@Icons.Material.Filled.Assignment"
+                                 Style="color:#176B50;" />
+                    </MudAvatar>
+
+                    <div>
+                        <MudText Typo="Typo.h6"
+                                 Style="color:#1F3028; font-weight:700;">
+                            Build your Financial Passport
+                        </MudText>
+
+                        <MudText Typo="Typo.body2"
+                                 Style="color:#65746B; line-height:1.8;">
+                            Organize financial indicators, supporting records,
+                            and data limitations into a report for potential lenders.
+                        </MudText>
+                    </div>
+                </div>
+
+                @* Feature 4 *@
+                <div class="d-flex align-start gap-4">
+
+                    <MudAvatar Variant="Variant.Text"
+                               Size="Size.Large"
+                               Style="background:#DDF3E7; color:#176B50;">
+                        <MudIcon Icon="@Icons.Material.Filled.Analytics"
+                                 Style="color:#176B50;" />
+                    </MudAvatar>
+
+                    <div>
+                        <MudText Typo="Typo.h6"
+                                 Style="color:#1F3028; font-weight:700;">
+                            Understand your finances
+                        </MudText>
+
+                        <MudText Typo="Typo.body2"
+                                 Style="color:#65746B; line-height:1.8;">
+                            Bring your business data together for AI-powered
+                            financial insights, with the option to seek guidance
+                            from a finance expert when available.
+                        </MudText>
+                    </div>
+                </div>
+
+            </div>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+    
+    @* Bottom CTA *@
+    <div style="background:#176B50; color:#FFFFFF;">
+        <MudContainer MaxWidth="MaxWidth.Large"
+                      Class="py-16 d-flex flex-column align-center text-center">
+
+            <MudChip T="string"
+                     Color="Color.Success"
+                     Variant="Variant.Text"
+                     Size="Size.Small"
+                     Class="mb-5 rounded-pill"
+                     Style="font-weight:700; letter-spacing:1px; background:#DDF3E7; padding:8px 12px;">
+                <MudIcon Icon="@Icons.Material.Filled.HourglassEmpty"
+                         Size="Size.Small"
+                         Class="mr-2" />
+                Wala ng mawawalang talaan sa notebook.
+            </MudChip>
+            
+            <MudText Typo="Typo.h2"
+                     Class="mb-4"
+                     Style="font-weight:800; line-height:1.2;">
+                Ready to Tell Your Buisness Story?
+            </MudText>
+
+            <MudText Typo="Typo.body1"
+                     Class="mb-7"
+                     Style="color:#E0F1E7; max-width:520px; line-height:1.8;">
+                Start recording today. In 30 days, you will have your first verifiable Financial 
+                Passport to unlock lower loan interest and larger supplier credit terms.
+            </MudText>
+
+            <MudStack Row="true">
+                <MudTextField @bind-Value="@contactNumber" 
+                              Mask="@_phoneMask"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentText="+63"
+                              Class="white-textfield"
+                              Placeholder="912 3456 789" />
+                              
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Inherit"
+                           Size="Size.Large"
+                           EndIcon="@Icons.Material.Filled.ArrowForward"
+                           Href="/transactions"
+                           Style="background:#FFFFFF; color:#176B50; border-radius:10px; padding:12px 24px; font-weight:700;">
+                    Create your free account
+                </MudButton>
+            </MudStack>
+            
+            <MudText Typo="Typo.caption"
+                     Class="mt-4">
+                Walang credit card na kailangan • 100% Free Core Talaan for Philippine Microbusinesses
+            </MudText>
+        </MudContainer>
+    </div>
+
+</div>
+
+@code {
+    private string contactNumber = "";
+
+    private IMask _phoneMask = new PatternMask("000 0000 000");
+    
+    private sealed class PreviewTransaction
+    {
+        public string Date { get; init; } = "";
+        public string Description { get; init; } = "";
+        public decimal Amount { get; init; }
+        public bool IsIncome { get; init; }
+        public bool HasEvidence { get; init; }
+    }
+
+    private readonly List<PreviewTransaction> _previewTransactions =
+    [
+        new()
+        {
+            Date = "Oct 24",
+            Description = "Grocery supplies",
+            Amount = 2500,
+            IsIncome = false,
+            HasEvidence = true
+        },
+        new()
+        {
+            Date = "Oct 24",
+            Description = "Sales (cash)",
+            Amount = 4200,
+            IsIncome = true,
+            HasEvidence = true
+        },
+        new()
+        {
+            Date = "Oct 23",
+            Description = "Electricity bill",
+            Amount = 1500,
+            IsIncome = false,
+            HasEvidence = false
+        },
+        new()
+        {
+            Date = "Oct 23",
+            Description = "Sales (cash)",
+            Amount = 3800,
+            IsIncome = true,
+            HasEvidence = true
+        }
+    ];
+}

@@ -58,3 +58,54 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+
+<style>
+     /* 1. Make the input text white */
+ .white-textfield input {
+     color: white !important;
+ }
+
+/* 2. Make the +63 adornment text white */
+.white-textfield .mud-input-adornment p {
+    color: white !important;
+}
+
+/* 3. Make the resting outline border white (slightly transparent) */
+.white-textfield .mud-input-outlined-border {
+    border-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 4. Keep the outline solid white when clicked (focused) */
+.white-textfield .mud-input.mud-input-focused .mud-input-outlined-border {
+    border-color: white !important;
+    border-width: 2px !important;
+}
+
+
+/* 1. Make the text the user types white */
+.white-textfield .mud-input-slot {
+    color: white !important;
+}
+
+/* 2. Prevent browser autofill from turning the text black again */
+.white-textfield .mud-input-slot:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* 3. Make the +63 adornment text white */
+.white-textfield .mud-input-adornment p {
+    color: white !important;
+}
+
+/* 4. Make the resting outline border white */
+.white-textfield .mud-input-outlined-border {
+    border-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* 5. Keep the outline solid white when clicked (focused) */
+.white-textfield .mud-input.mud-input-focused .mud-input-outlined-border {
+    border-color: white !important;
+    border-width: 2px !important;
+}

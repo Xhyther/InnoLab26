@@ -1,4 +1,4 @@
-﻿﻿@using MudBlazor
+﻿@using MudBlazor
 @inherits LayoutComponentBase
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
@@ -12,15 +12,14 @@
             
             <MudLink Href="/" Typo="Typo.h1" Color="Color.Primary" Underline="Underline.None"
                      Style="font-size: 1.5rem; font-weight: 800; cursor: pointer; outline:none">
-                KitaLedgers
+                <MudImage Src="PaLEAsta!.svg" Alt="My SVG" Width="120" Height="120" />
             </MudLink>
 
             <MudSpacer />
 
             <div class="d-none d-md-flex">
                 <MudLink Typo="Typo.body2" Href="/#how-section" Color="Color.Default" Underline="Underline.None" Class="mx-4 nav-link">How it works</MudLink>
-                <MudLink Typo="Typo.body2" Href="/#feature-section" Color="Color.Default" Underline="Underline.None" Class="mx-4 nav-link">Features</MudLink>
-                <MudLink Typo="Typo.body2" Href="/About" Color="Color.Default" Underline="Underline.None" Class="mx-4 nav-link">About</MudLink>
+                <MudLink Typo="Typo.body2" Href="/#why-section" Color="Color.Default" Underline="Underline.None" Class="mx-4 nav-link">Why PaLEAsta!</MudLink>
             </div>
 
             <MudSpacer />
@@ -46,24 +45,57 @@
     <MudMainContent>
         @Body
         
-        <MudContainer MaxWidth="MaxWidth.Large" Class="py-12 mt-16 border-t border-solid mud-border-lines-default">
-            <div class="d-flex flex-column flex-md-row align-center justify-space-between">
-                <MudText Typo="Typo.button" Class="font-bold">KitaLedgers</MudText>
-                <MudText Typo="Typo.body2" Color="Color.Dark">©InnoLab 2026</MudText>
-                
-                <MudStack Row="true" Spacing="0">
-                    <MudLink Href="https://github.com/Zanpakuto/Hazelnet_Web">
-                        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" 
-                                       Color="Color.Dark" Size="Size.Small"/>
-                    </MudLink>
-                <!--
-                    <MudIconButton Icon="@Icons.Custom.Brands.Facebook" Size="Size.Small"/>
-                    <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Size="Size.Small"/>
-                    -->
-                </MudStack>
-                
-            </div>
-        </MudContainer>
+        
+        <MudContainer MaxWidth="MaxWidth.Large" Class="py-16 mt-16 border-t border-solid mud-border-lines-default" Style="background-color: #f6fcf8;">
+    <MudGrid Spacing="6" Justify="Justify.SpaceBetween">
+        
+        <!-- Brand & Description Column -->
+        <MudItem xs="12" md="4" lg="5">
+            <MudStack Spacing="4">
+                <MudImage Src="PaLEAsta!.svg" Alt="Logo" Width="100" Height="30" ObjectFit="ObjectFit.Contain" Class="align-self-start" />
+                <MudText Typo="Typo.body2" Style="color: #475569; line-height: 1.6; max-width: 400px;">
+                    Grassroots bookkeeping and verifiable financial identity 
+                    for sari-sari stores, market vendors, and community 
+                    micro-enterprises across the Philippines.
+                </MudText>
+            </MudStack>
+        </MudItem>
+        
+        <!-- Platform Column -->
+        <MudItem xs="12" sm="4" md="2">
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.button" Style="font-weight: 700; color: #1f2937; letter-spacing: 0.5px;">PLATFORM</MudText> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Features</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Financial Passport</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Co-op Integrations</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Success Stories</MudLink> 
+            </MudStack>
+        </MudItem>
+        
+        <!-- Ecosystem Column -->
+        <MudItem xs="12" sm="4" md="3">
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.button" Style="font-weight: 700; color: #1f2937; letter-spacing: 0.5px;">ECOSYSTEM</MudText> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Naga MSME Hub</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Palengke Program</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Barangay Helpdesks</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Financial Literacy Hub</MudLink> 
+            </MudStack>
+        </MudItem>
+        
+        <!-- Trust & Legal Column -->
+        <MudItem xs="12" sm="4" md="3" lg="2">
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.button" Style="font-weight: 700; color: #1f2937; letter-spacing: 0.5px;">TRUST & LEGAL</MudText> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Data Privacy Charter</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Terms of Service</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Community Guidelines</MudLink> 
+                <MudLink Href="#" Color="Color.Default" Underline="Underline.None" Typo="Typo.body2" Style="color: #475569;">Security & Evidence Vault</MudLink> 
+            </MudStack>
+        </MudItem>
+        
+    </MudGrid>
+</MudContainer>
     </MudMainContent>
 </MudLayout>
 
