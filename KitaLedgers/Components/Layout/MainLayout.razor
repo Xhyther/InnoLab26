@@ -1,0 +1,357 @@
+﻿﻿@using MudBlazor
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1" Dense="true" Class="pa-4" Style="backdrop-filter: blur(10px);">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="d-flex align-center">
+            
+            <MudLink Href="/" Typo="Typo.h1" Color="Color.Primary" Underline="Underline.None"
+                     Style="font-size: 1.5rem; font-weight: 800; cursor: pointer; outline:none">
+                KitaLedgers
+            </MudLink>
+
+            <MudSpacer />
+
+            <div class="d-none d-md-flex">
+                <MudLink Typo="Typo.body2" Href="/#how-section" Color="Color.Default" Underline="Underline.None" Class="mx-4 nav-link">How it works</MudLink>
+                <MudLink Typo="Typo.body2" Href="/#feature-section" Color="Color.Default" Underline="Underline.None" Class="mx-4 nav-link">Features</MudLink>
+                <MudLink Typo="Typo.body2" Href="/About" Color="Color.Default" Underline="Underline.None" Class="mx-4 nav-link">About</MudLink>
+            </div>
+
+            <MudSpacer />
+
+            <div class="d-flex align-center">
+                <MudLink Typo="Typo.button" Color="Color.Default" Href="/login"
+                         Underline="Underline.None" Class="mx-4" Style="font-weight: 600">Log in</MudLink>
+                
+                <MudButton Href="/register" Target="_self"
+                    Variant="Variant.Filled" 
+                           Class="px-6"
+                           Color="Color.Primary" 
+                           Style="border-radius: 8px; text-transform: none;"
+                           Size="Size.Medium" 
+                           DropShadow="false">
+                    Get Started
+                </MudButton>
+            </div>
+
+        </MudContainer>
+    </MudAppBar>
+    
+    <MudMainContent>
+        @Body
+        
+        <MudContainer MaxWidth="MaxWidth.Large" Class="py-12 mt-16 border-t border-solid mud-border-lines-default">
+            <div class="d-flex flex-column flex-md-row align-center justify-space-between">
+                <MudText Typo="Typo.button" Class="font-bold">KitaLedgers</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Dark">©InnoLab 2026</MudText>
+                
+                <MudStack Row="true" Spacing="0">
+                    <MudLink Href="https://github.com/Zanpakuto/Hazelnet_Web">
+                        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" 
+                                       Color="Color.Dark" Size="Size.Small"/>
+                    </MudLink>
+                <!--
+                    <MudIconButton Icon="@Icons.Custom.Brands.Facebook" Size="Size.Small"/>
+                    <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Size="Size.Small"/>
+                    -->
+                </MudStack>
+                
+            </div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<style>
+    /* Subtle hover effect for a "premium" feel */
+    .nav-link {
+        transition: color 0.3s ease;
+        font-weight: 500;
+    }
+</style>
+
+
+@code {
+    private bool _isDarkMode = false;
+    private MudTheme? _theme = null;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _theme = new()
+        {
+            PaletteLight = _lightPalette,
+            PaletteDark = _darkPalette,
+            Typography = _typography,
+            LayoutProperties = new LayoutProperties()
+            {
+                DefaultBorderRadius = "8px",
+                DrawerWidthLeft = "260px",
+                AppbarHeight = "64px",
+            }
+        };
+    }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    // Primary: #7e6fff — a medium-weight indigo-violet
+    // Light palette built around warm whites and the violet accent
+
+    private readonly PaletteLight _lightPalette = new()
+    {
+    // Brand — forest green
+    Primary = "#176B50",
+    PrimaryDarken = "#10533E",
+    PrimaryLighten = "#3D9677",
+    PrimaryContrastText = "#FFFFFF",
+
+    // Supporting colors
+    Secondary = "#DDF3E7",
+    SecondaryContrastText = "#176B50",
+    Tertiary = "#E9A23B",
+
+    // Semantic colors
+    Info = "#2878B5",
+    InfoContrastText = "#FFFFFF",
+    Success = "#16804A",
+    SuccessContrastText = "#FFFFFF",
+    Warning = "#A85D08",
+    WarningContrastText = "#FFFFFF",
+    Error = "#C93636",
+    ErrorContrastText = "#FFFFFF",
+
+    // Surfaces
+    Background = "#F8FAF7",
+    BackgroundGray = "#F0F4EF",
+    Surface = "#FFFFFF",
+    DrawerBackground = "#FFFFFF",
+
+    // Appbar
+    AppbarBackground = "#F8FAF7",
+    AppbarText = "#18352B",
+
+    // Text
+    TextPrimary = "#1F3028",
+    TextSecondary = "#65746B",
+    TextDisabled = "#A8B2AB",
+
+    // Actions
+    ActionDefault = "#176B50",
+    ActionDisabled = "#BEC8C0",
+    ActionDisabledBackground = "#E9EEE9",
+
+    // Lines and dividers
+    Divider = "#E1E8E1",
+    LinesDefault = "#E1E8E1",
+    TableLines = "#E8EDE8",
+
+    // Grays
+    GrayDefault = "#929D94",
+    GrayLight = "#DCE4DC",
+    GrayLighter = "#F1F5F0",
+    GrayDark = "#59665D",
+    GrayDarker = "#303C33",
+
+    // Overlays
+    OverlayLight = "rgba(248,250,247,0.8)",
+    OverlayDark = "rgba(24,53,43,0.5)",
+};
+
+    private readonly PaletteDark _darkPalette = new()
+    {
+        // Brand
+        Primary = "#58B995",
+        PrimaryDarken = "#319A75",
+        PrimaryLighten = "#8AD5B7",
+        PrimaryContrastText = "#102B20",
+
+        // Supporting colors
+        Secondary = "#233F32",
+        SecondaryContrastText = "#B4EBD0",
+        Tertiary = "#F3B955",
+
+        // Semantic colors
+        Info = "#73B9ED",
+        InfoContrastText = "#102A3C",
+        Success = "#65D69A",
+        SuccessContrastText = "#103421",
+        Warning = "#F3C267",
+        WarningContrastText = "#3C280A",
+        Error = "#FF8585",
+        ErrorContrastText = "#431818",
+
+        // Surfaces
+        Background = "#111A15",
+        BackgroundGray = "#0D1511",
+        Surface = "#1A2720",
+        DrawerBackground = "#111A15",
+
+        // Appbar
+        AppbarBackground = "#111A15",
+        AppbarText = "#E5F0E8",
+
+        // Text
+        TextPrimary = "#E5F0E8",
+        TextSecondary = "#A3B5A8",
+        TextDisabled = "#68796D",
+
+        // Actions
+        ActionDefault = "#B4EBD0",
+        ActionDisabled = "#526357",
+        ActionDisabledBackground = "#25342A",
+
+        // Lines and dividers
+        Divider = "#304238",
+        LinesDefault = "#304238",
+        TableLines = "#283A2F",
+
+        // Grays
+        GrayDefault = "#718477",
+        GrayLight = "#2A3B30",
+        GrayLighter = "#1F3026",
+        GrayDark = "#B2C2B6",
+        GrayDarker = "#E5F0E8",
+
+        // Drawer
+        DrawerText = "#B2C2B6",
+        DrawerIcon = "#58B995",
+
+        // Overlays
+        OverlayLight = "rgba(26,39,32,0.7)",
+        OverlayDark = "rgba(0,0,0,0.6)",
+    };
+
+    private readonly Typography _typography = new()
+    {
+        Default = new DefaultTypography()
+        {
+            // Figtree: modern, geometric, warm — excellent for apps/dashboards
+            FontFamily    = new[] { "Figtree", "system-ui", "sans-serif" },
+            FontSize      = "0.9375rem",   // 15px — slightly more comfortable than 14px
+            FontWeight    = "400",
+            LineHeight    = "1.6",
+            LetterSpacing = "0"
+        },
+
+        // Plus Jakarta Sans kept for headings — works well with Figtree
+        H1 = new H1Typography()
+        {
+            FontFamily    = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight    = "800",
+            FontSize      = "2.5rem",      // 40px
+            LineHeight    = "1.2",
+            LetterSpacing = "-0.02em"      // Tight tracking on large display text
+        },
+        H2 = new H2Typography()
+        {
+            FontFamily    = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight    = "700",
+            FontSize      = "2rem",        // 32px
+            LineHeight    = "1.25",
+            LetterSpacing = "-0.015em"
+        },
+        H3 = new H3Typography()
+        {
+            FontFamily    = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight    = "600",
+            FontSize      = "1.5rem",      // 24px
+            LineHeight    = "1.3",
+            LetterSpacing = "-0.01em"
+        },
+        H4 = new H4Typography()
+        {
+            FontFamily    = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight    = "600",
+            FontSize      = "1.25rem",     // 20px
+            LineHeight    = "1.4",
+            LetterSpacing = "-0.005em"
+        },
+        H5 = new H5Typography()
+        {
+            FontFamily    = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight    = "600",
+            FontSize      = "1.125rem",    // 18px — was missing entirely
+            LineHeight    = "1.4",
+            LetterSpacing = "0"
+        },
+        H6 = new H6Typography()
+        {
+            FontFamily    = new[] { "Figtree", "sans-serif" },   // Body font for small labels
+            FontWeight    = "700",
+            FontSize      = "0.75rem",     // 12px
+            LineHeight    = "1.5",
+            LetterSpacing = "0.08em",      // Wide tracking for uppercase labels
+            TextTransform = "uppercase"
+        },
+
+        Body1 = new Body1Typography()
+        {
+            FontSize      = "0.9375rem",   // Match default — 15px
+            LineHeight    = "1.6",
+            LetterSpacing = "0"
+        },
+        Body2 = new Body2Typography()
+        {
+            FontSize      = "0.875rem",    // 14px
+            LineHeight    = "1.55",
+            LetterSpacing = "0",
+            FontWeight    = "400"
+        },
+
+        Subtitle1 = new Subtitle1Typography()
+        {
+            FontSize      = "0.9375rem",
+            FontWeight    = "600",
+            LineHeight    = "1.5",
+            LetterSpacing = "0"
+        },
+        Subtitle2 = new Subtitle2Typography()
+        {
+            FontSize      = "0.875rem",
+            FontWeight    = "600",
+            LineHeight    = "1.5",
+            LetterSpacing = "0"
+        },
+
+        Button = new ButtonTypography()
+        {
+            FontFamily    = new[] { "Figtree", "sans-serif" },
+            FontWeight    = "600",
+            FontSize      = "0.875rem",
+            LetterSpacing = "0.02em",      // Subtle — modern apps don't use wide button tracking
+            TextTransform = "none"         // Sentence case is the modern standard
+        },
+
+        Caption = new CaptionTypography()
+        {
+            FontSize      = "0.75rem",     // 12px
+            FontWeight    = "400",
+            LineHeight    = "1.5",
+            LetterSpacing = "0.01em"
+        },
+
+        Overline = new OverlineTypography()
+        {
+            FontSize      = "0.6875rem",   // 11px
+            FontWeight    = "700",
+            LineHeight    = "1.5",
+            LetterSpacing = "0.1em",
+            TextTransform = "uppercase"
+        }
+    };
+
+    public string DarkLightModeButtonIcon => _isDarkMode switch
+    {
+        true  => Icons.Material.Rounded.LightMode,
+        false => Icons.Material.Outlined.DarkMode,
+    };
+}
