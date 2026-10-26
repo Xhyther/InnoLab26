@@ -79,6 +79,23 @@
                         Evidence-aware reports
                     </div>
                 </div>
+                
+                <MudPaper Elevation="0" Class="pa-5 my-5 rounded-xl d-flex align-center gap-5" Style="background-color: #ffffff; max-width: 500px; border: 1px solid #f1f5f9;">
+                    <!-- Mascot Image -->
+                    <!-- Replace "lea-mascot.svg" with the actual path to your image -->
+                    <MudImage Src="lea-mascot.svg" Alt="LEA Mascot" Width="75" Height="75" ObjectFit="ObjectFit.Contain" />
+    
+                    <!-- Text Content -->
+                    <div>
+                        <MudText Typo="Typo.h6" Style="color: #186A46; font-weight: 700; letter-spacing: -0.5px;" Class="mb-1">
+                            Meet LEA, your AI financial adviser.
+                        </MudText>
+                        <MudText Typo="Typo.body2" Style="color: #64748b; line-height: 1.6; font-size: 0.95rem;">
+                            Advice grounded in your business records,<br />
+                            for the decisions that move you forward.
+                        </MudText>
+                    </div>
+                </MudPaper>
             </MudItem>
 
             @* Dashboard Preview *@
@@ -93,7 +110,7 @@
                             <MudAvatar Size="Size.Medium"
                                        Color="Color.Success"
                                        Variant="Variant.Text">
-                                    <MudIcon Icon="@Icons.Material.Filled.Storefront"
+                                <MudIcon Icon="@Icons.Material.Filled.Storefront"
                                          Size="Size.Medium" />
                             </MudAvatar>
                             <div>
@@ -246,11 +263,11 @@
                                 </MudTd>
                                 <MudTd DataLabel="Evidence">
                                     <MudIcon Icon="@(context.HasEvidence
-                                                     ? Icons.Material.Filled.CheckCircle
-                                                     : Icons.Material.Filled.HelpOutline)"
+                                                       ? Icons.Material.Filled.CheckCircle
+                                                       : Icons.Material.Filled.HelpOutline)"
                                              Color="@(context.HasEvidence
-                                                     ? Color.Success
-                                                     : Color.Default)"
+                                                        ? Color.Success
+                                                        : Color.Default)"
                                              Size="Size.Small" />
                                 </MudTd>
                             </RowTemplate>
@@ -272,6 +289,105 @@
             </MudItem>
         </MudGrid>
     </MudContainer>
+    
+    @* LEA AI*@
+    <MudContainer MaxWidth="MaxWidth.Large" Class="py-16 my-8">
+    <MudGrid Spacing="8" Class="align-center">
+        
+        <!-- Left Column: Copy & Mascot -->
+        
+        
+        <MudItem xs="12" md="5">
+            <MudText Typo="Typo.overline" 
+                     Style="letter-spacing: 1px; color: #10b981; font-weight: 700;" 
+                     Class="mb-4 d-block">
+                THE MAIN FEATURE / LEA AI FINANCIAL ADVISER
+            </MudText>
+            
+            <MudText Typo="Typo.h2" 
+                     Style="color: #113f2b; line-height: 1.2;" 
+                     Class="mb-6">
+                Advice that starts<br/>with your business.
+            </MudText>
+            
+            <MudText Typo="Typo.body1" 
+                     Style="color: #64748b; line-height: 1.6; font-size: 1.1rem;" 
+                     Class="mb-8">
+                LEA uses your current financial standing to help you 
+                think through decisions, compare plans, and identify 
+                steps toward your business goals.
+            </MudText>
+            
+            <!-- Replace with your actual mascot SVG path -->
+            <MudImage Src="lea-mascot.svg" Alt="LEA Mascot" Width="150" ObjectFit="ObjectFit.Contain" />
+        </MudItem>
+
+        <!-- Right Column: Interactive Example UI -->
+        <MudItem xs="12" md="7">
+            <!-- Main gray container -->
+            <MudPaper Elevation="0" Outlined="true" Class="pa-8 rounded-xl" Style="background-color: #DDF3E7; border: 2px solid #f1f5f9;">
+                
+                <!-- Header & Badge -->
+                <div class="d-flex justify-space-between align-center mb-6">
+                    <MudText Typo="Typo.h6" Style="font-weight: 700; color: #113f2b;">Plan a decision with LEA</MudText>
+                    <MudChip T="string" Size="Size.Small" Style="background-color: #3D9677; color: #10533E; font-weight: 700; letter-spacing: 0.5px; font-size: 0.7rem;" Class="rounded-pill px-3">
+                        ILLUSTRATIVE EXAMPLE
+                    </MudChip>
+                </div>
+
+                <!-- Top Stats -->
+                <MudGrid Spacing="4" Class="mb-6">
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Elevation="0" Class="pa-6 rounded-lg" Style="background-color: white;">
+                            <MudText Typo="Typo.body2" Style="color: #64748b;" Class="mb-2">Available cash</MudText>
+                            <MudText Typo="Typo.h4" Style="font-weight: 700; color: #113f2b;">₱36,500</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudPaper Elevation="0" Class="pa-6 rounded-lg" Style="background-color: white;">
+                            <MudText Typo="Typo.body2" Style="color: #64748b;" Class="mb-2">Recorded monthly sales</MudText>
+                            <MudText Typo="Typo.h4" Style="font-weight: 700; color: #113f2b;">₱45,000</MudText>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+
+                <!-- Business Goal Details -->
+                <MudPaper Elevation="0" Class="pa-6 rounded-lg mb-6" Style="background-color: white;">
+                    <MudText Typo="Typo.subtitle2" Style="font-weight: 700; color: #113f2b;" Class="mb-5">Your business goal</MudText>
+                    
+                    <div class="d-flex justify-space-between mb-4">
+                        <MudText Typo="Typo.body2" Style="color: #64748b;">Question for LEA</MudText>
+                        <MudText Typo="Typo.body2" Style="font-weight: 700; color: #113f2b;">Can I add a new product line?</MudText>
+                    </div>
+                    <div class="d-flex justify-space-between mb-4">
+                        <MudText Typo="Typo.body2" Style="color: #64748b;">Business context</MudText>
+                        <MudText Typo="Typo.body2" Style="font-weight: 700; color: #113f2b;">Cash flow, costs & inventory</MudText>
+                    </div>
+                    <div class="d-flex justify-space-between">
+                        <MudText Typo="Typo.body2" Style="color: #64748b;">Plan to explore</MudText>
+                        <MudText Typo="Typo.body2" Style="font-weight: 700; color: #113f2b;">Budget & expected demand</MudText>
+                    </div>
+                </MudPaper>
+
+                <!-- LEA Advice Callout -->
+                <MudPaper Elevation="0" Class="pa-5 rounded-lg d-flex gap-4 align-start" Style="background-color: #edf7ed;">
+                    <!-- Mini Mascot -->
+                    <MudImage Src="lea-mascot.svg" Alt="LEA Mascot" Width="36" ObjectFit="ObjectFit.Contain" Class="mt-1" />
+                    <div>
+                        <MudText Typo="Typo.subtitle2" Style="font-weight: 700; color: #113f2b;" Class="mb-1">
+                            LEA / Advice based on your records
+                        </MudText>
+                        <MudText Typo="Typo.body2" Style="color: #475569; line-height: 1.5;">
+                            "Let's compare the cost with your available cash, upcoming bills, and sales trends before you decide."
+                        </MudText>
+                    </div>
+                </MudPaper>
+
+            </MudPaper>
+        </MudItem>
+        
+    </MudGrid>
+</MudContainer>
 
     @* Audience Banner — moved below Features *@
     <div style="background:#153F30; color:#FFFFFF;">
