@@ -109,3 +109,15 @@ h1:focus {
     border-color: white !important;
     border-width: 2px !important;
 }
+
+html {
+    scroll-behavior: smooth;
+}
+
+#how-it-works {
+    scroll-margin-top: 70px; /* Creates a 70px buffer above the section when scrolled to */
+}
+
+#why-app {
+    scroll-margin-top: 50px; /* Creates a 50px buffer above the section when scrolled to */
+}

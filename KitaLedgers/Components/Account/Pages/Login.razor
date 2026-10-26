@@ -1,4 +1,5 @@
 ﻿@page "/Account/Login"
+@layout EmptyBackLayout
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -13,63 +14,167 @@
 
 <PageTitle>Log in</PageTitle>
 
-<h1>Log in</h1>
-<div class="row">
-    <div class="col-lg-6">
-        <section>
-            <StatusMessage Message="@errorMessage"/>
-            <EditForm EditContext="editContext" method="post" OnSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator/>
-                <h2>Use a local account to log in.</h2>
-                <hr/>
-                <ValidationSummary class="text-danger" role="alert"/>
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="username webauthn" aria-required="true" placeholder="name@example.com"/>
-                    <label for="Input.Email" class="form-label">Email</label>
-                    <ValidationMessage For="() => Input.Email" class="text-danger"/>
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password"/>
-                    <label for="Input.Password" class="form-label">Password</label>
-                    <ValidationMessage For="() => Input.Password" class="text-danger"/>
-                </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input"/>
-                        Remember me
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <hr/>
-                <div class="d-flex flex-column">
-                    <span class="text-secondary mx-auto mt-2">OR</span>
-                    <PasskeySubmit Operation="PasskeyOperation.Request" Name="Input.Passkey" EmailName="Input.Email" class="btn btn-link mx-auto">Log in with a passkey</PasskeySubmit>
-                </div>
-                <hr/>
-                <div>
-                    <p>
-                        <a href="Account/ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </EditForm>
-        </section>
-    </div>
-    <div class="col-lg-4 col-lg-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr/>
-            <ExternalLoginPicker/>
-        </section>
-    </div>
+@* Re-skins every MudBlazor component inside this wrapper with the brand green *@
+<div class="login-page">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pb-12">
+        <MudGrid Spacing="8" Justify="Justify.Center">
+
+            @* ───────── Left: welcome hero (4/10) ───────── *@
+            <MudItem xs="12" md="5">
+                <MudPaper Elevation="0" Class="d-inline-flex px-3 py-1 mb-2 rounded-pill login-badge">
+                    <MudText Typo="Typo.overline" Style="font-weight:700; line-height:1.6;">Welcome back</MudText>
+                </MudPaper>
+
+                <MudText Typo="Typo.h1" Color="Color.Primary" Class="mb-3" Style="font-weight:800; line-height:1.2;">
+                    Your business.<br />
+                    Your next step.<br />
+                    A little help from LEA.
+                </MudText>
+
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-7" Style="max-width:380px;">
+                    Pick up your records, explore your next decision,
+                    and keep building your Financial Passport.
+                </MudText>
+
+                <MudImage Src="lea-mascot.svg" Alt="LEA Mascot" Width="250" Height="250" ObjectFit="ObjectFit.Contain" />
+            </MudItem>
+
+            @* ───────── Right: sign-in card (6/10) ───────── *@
+            <MudItem xs="12" md="5">
+                <MudPaper Outlined="true" Elevation="0" Class="pa-7 rounded-xl">
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-1" Style="font-weight:800;">
+                        Sign in to KitaLedgers!
+                    </MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-5">
+                        Use your email and password to log in.
+                    </MudText>
+
+                    <StatusMessage Message="@errorMessage" />
+
+                    <EditForm EditContext="editContext" method="post" OnSubmit="LoginUser" FormName="login">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="mud-error-text mud-typography-caption mb-3" role="alert" />
+
+                        <div class="mb-4">
+                            <label for="Input.Email" class="login-label">Email</label>
+                            <InputText @bind-Value="Input.Email" id="Input.Email" class="login-input"
+                                       autocomplete="username webauthn" aria-required="true" placeholder="name@example.com" />
+                            <ValidationMessage For="() => Input.Email" class="mud-error-text mud-typography-caption" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="Input.Password" class="login-label">Password</label>
+                            <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="login-input"
+                                       autocomplete="current-password" aria-required="true" placeholder="••••••••" />
+                            <ValidationMessage For="() => Input.Password" class="mud-error-text mud-typography-caption" />
+                        </div>
+
+                        <label class="login-remember mb-5">
+                            <InputCheckbox @bind-Value="Input.RememberMe" />
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Remember me</MudText>
+                        </label>
+
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
+                                   Size="Size.Large" FullWidth="true" DisableElevation="true" Class="rounded-lg">
+                            Sign in
+                        </MudButton>
+                        
+                        @*
+                        <PasskeySubmit Operation="PasskeyOperation.Request" Name="Input.Passkey" EmailName="Input.Email"
+                                       class="mud-button-root mud-button mud-button-outlined mud-button-outlined-primary mud-button-outlined-size-large mud-button-root-fullwidth mud-ripple rounded-lg mb-3">
+                            Log in with a passkey
+                        </PasskeySubmit>
+                        *@
+                        <MudButton Href="Account/ForgotPassword" Variant="Variant.Text" Color="Color.Primary"
+                                   Size="Size.Small" FullWidth="true" Class="rounded-lg">
+                            Forgot your password?
+                        </MudButton>
+                        
+                        
+                    </EditForm>
+
+                    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-5 mb-2">New to PaLEAsta!?</MudText>
+                    <MudButton Href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))"
+                               Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" FullWidth="true" Class="rounded-lg">
+                        Create an account
+                    </MudButton>
+
+                    <div class="d-flex justify-center mt-3">
+                        <MudLink Href="Account/ResendEmailConfirmation" Typo="Typo.caption" Color="Color.Secondary">
+                            Resend email confirmation
+                        </MudLink>
+                    </div>
+
+                    <MudDivider Class="my-5" />
+                    
+                </MudPaper>
+            </MudItem>
+
+        </MudGrid>
+    </MudContainer>
 </div>
+
+<style>
+    /* Brand palette: overrides MudBlazor's theme variables for this page only */
+    .login-page {
+        --mud-palette-primary: #0A7F59;
+        --mud-palette-primary-darken: #075E43;
+        --mud-palette-primary-lighten: #E3F1EA;
+        --mud-palette-primary-text: #FFFFFF;
+        --mud-palette-secondary: #5E6B64;
+        --mud-palette-primary-hover: rgba(10, 127, 89, 0.06);
+
+        background: #F8FAF7;
+        min-height: 100vh;
+    }
+
+    .login-badge {
+        background: #E3F1EA !important;
+        color: #075E43;
+    }
+
+    /* Native inputs (static SSR forms), styled with MudBlazor's variables */
+    .login-label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--mud-palette-text-primary);
+    }
+
+    .login-input {
+        width: 100%;
+        box-sizing: border-box;
+        height: 44px;
+        padding: 0 14px;
+        border: 1px solid var(--mud-palette-lines-inputs, #BDBDBD);
+        border-radius: var(--mud-default-borderradius, 8px);
+        background: #F5F7F4;
+        font: inherit;
+        color: var(--mud-palette-text-primary);
+        transition: border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    .login-input:focus {
+        outline: none;
+        background: #fff;
+        border-color: var(--mud-palette-primary);
+        box-shadow: 0 0 0 3px rgba(10, 127, 89, 0.15);
+    }
+
+    .login-remember {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .login-remember input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--mud-palette-primary);
+    }
+</style>
 
 @code {
     private string? errorMessage;
@@ -106,7 +211,7 @@
         if (!string.IsNullOrEmpty(Input.Passkey?.CredentialJson))
         {
             // When performing passkey sign-in, don't perform form validation.
-            result = await SignInManager.PasskeySignInAsync(Input.Passkey.CredentialJson);
+                result = await SignInManager.PasskeySignInAsync(Input.Passkey.CredentialJson);
         }
         else
         {
