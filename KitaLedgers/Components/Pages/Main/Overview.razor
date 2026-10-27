@@ -1,0 +1,345 @@
+﻿@page "/Overview"
+@layout MainPageLayout
+@attribute [Authorize]
+
+@using System.Globalization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using KitaLedgers.Data
+@using KitaLedgers.Model
+
+@inject IDashboardService Dashboard
+@inject AuthenticationStateProvider AuthState
+@inject NavigationManager Nav
+
+<PageTitle>Overview</PageTitle>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else if (_data is null)
+{
+    <div class="ov ov-empty">
+        <MudText Typo="Typo.h5" Class="ov-h1">Let's set up your business</MudText>
+        <MudText Class="ov-sub">Create your business profile to start recording transactions.</MudText>
+        <a class="ov-btn ov-btn--solid" href="business/new">Create business</a>
+    </div>
+}
+else
+{
+    var d = _data;
+    var priorities = BuildPriorities(d);
+
+    <div class="ov">
+
+        @* ───────── Welcome header ───────── *@
+        <header class="ov-head">
+            <div>
+                <h1 class="ov-h1">@d.Greeting, @d.OwnerNickname</h1>
+                <p class="ov-sub">Here's how @d.BusinessName is doing based on your recorded transactions.</p>
+            </div>
+            <div class="ov-head-actions">
+                <a class="ov-btn ov-btn--tint" href="passport">
+                    <MudIcon Icon="@Icons.Material.Outlined.AssignmentInd" Size="Size.Small" />
+                    Financial Passport
+                </a>
+                <a class="ov-btn ov-btn--solid" href="transactions/new">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" />
+                    Record transaction
+                </a>
+            </div>
+        </header>
+
+        @* ───────── LEA hero ───────── *@
+        <section class="lea">
+            <div class="lea-intro">
+                <img class="lea-mascot" src="lea-mascot.svg" alt="LEA" />
+                <div>
+                    <div class="lea-eyebrow">YOUR AI FINANCIAL ADVISER</div>
+                    <h2 class="lea-title">What are you planning for your business?</h2>
+                </div>
+            </div>
+            <p class="lea-lede">LEA uses your current business standing to help you explore decisions and plan your next steps.</p>
+
+            <div class="lea-context">
+                <span>Cash: @Php(d.Cash)</span>
+                <span>Non-loan inflows: @Php(d.NonLoanInflow)</span>
+                <span>Recorded expenses: @Php(d.Outflow)</span>
+            </div>
+
+            <div class="lea-ask">
+                <MudTextField T="string" @bind-Value="_question" Immediate="true"
+                              Placeholder="Ask about a decision, a plan, or your loan portfolio…"
+                              Variant="Variant.Text" Margin="Margin.None" Class="lea-input"
+                              OnKeyDown="OnAskKeyDown" />
+                <button type="button" class="ov-btn ov-btn--solid lea-ask-btn" @onclick="Ask">Ask LEA →</button>
+            </div>
+
+            <div class="lea-goals">
+                @foreach (var g in _goals)
+                {
+                    <button type="button" class="lea-goal" @onclick="() => AskAbout(g)">@g</button>
+                }
+            </div>
+        </section>
+
+        @* ───────── KPI cards ───────── *@
+        <section class="kpis">
+            <article class="kpi">
+                <div class="kpi-top">
+                    <span class="kpi-label">Total balance</span>
+                    <span class="kpi-icon"><MudIcon Icon="@Icons.Material.Outlined.AccountBalanceWallet" Size="Size.Small" Style="color:#087F5B;" /></span>
+                </div>
+                <div class="kpi-value" style="color:#183C2C;">@Php(d.Cash)</div>
+                <div class="kpi-delta-row">
+                    @DeltaPlain(d.CashDeltaPct, higherIsGood: true)
+                    <span class="kpi-vs">vs last month</span>
+                </div>
+                <p class="kpi-note">Current net available funds across ledger accounts</p>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-top">
+                    <span class="kpi-label">Cash inflow</span>
+                    <span class="kpi-icon"><MudIcon Icon="@Icons.Material.Outlined.CallReceived" Size="Size.Small" Style="color:#087F5B;" /></span>
+                </div>
+                <div class="kpi-value" style="color:#07543E;">@Php(d.Inflow)</div>
+                <div class="kpi-delta-row">
+                    @DeltaPill(d.InflowDeltaPct, higherIsGood: true)
+                    <span class="kpi-vs">vs last month</span>
+                </div>
+                <p class="kpi-note">Total customer retail payments &amp; sales received</p>
+            </article>
+
+            <article class="kpi">
+                <div class="kpi-top">
+                    <span class="kpi-label">Cash outflow</span>
+                    <span class="kpi-icon kpi-icon--red"><MudIcon Icon="@Icons.Material.Outlined.CallMade" Size="Size.Small" Style="color:#BA1A1A;" /></span>
+                </div>
+                <div class="kpi-value" style="color:#B54436;">@Php(d.Outflow)</div>
+                <div class="kpi-delta-row">
+                    @DeltaPill(d.OutflowDeltaPct, higherIsGood: false)
+                    <span class="kpi-vs">vs last month</span>
+                </div>
+                <p class="kpi-note">Inventory restock, utility bills &amp; transport expenses</p>
+            </article>
+        </section>
+
+        @* ───────── Chart + LEA's priorities ───────── *@
+        <section class="split">
+            <article class="card chart-card">
+                <h3 class="card-title">Monthly cash flows</h3>
+                <p class="card-sub">@d.PeriodLabel</p>
+                <div class="legend">
+                    <span><i style="background:#087F5B"></i>Cash in</span>
+                    <span><i style="background:#B54436"></i>Cash out</span>
+                </div>
+                <MudChart T="double" 
+                    ChartType="ChartType.Line"
+                          ChartSeries="_series"
+                          XAxisLabels="_labels"
+                          ChartOptions="_chartOptions"
+                          Width="100%" Height="240px" />
+                <p class="card-sub">Based on posted transactions. Voided entries are excluded.</p>
+            </article>
+
+            <aside class="card priorities">
+                <div class="prio-head">
+                    <span class="prio-title">
+                        <MudIcon Icon="@Icons.Material.Outlined.EnergySavingsLeaf" Size="Size.Small" Style="color:#087F5B;" />
+                        LEA’s priorities
+                    </span>
+                    <span class="prio-count">@priorities.Count @(priorities.Count == 1 ? "action" : "actions")</span>
+                </div>
+
+                @foreach (var p in priorities)
+                {
+                    <div class="prio-item">
+                        <MudIcon Icon="@p.Icon" Size="Size.Small" Style="@($"color:{p.Color}; flex:none;")" />
+                        <div>
+                            <div class="prio-item-title">@p.Title</div>
+                            <div class="prio-item-body">@p.Body</div>
+                            @if (p.LinkText is not null)
+                            {
+                                <a class="prio-link" href="@p.Href">@p.LinkText <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Style="font-size:14px;" /></a>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="prio-item prio-tip">
+                    <MudIcon Icon="@Icons.Material.Outlined.EnergySavingsLeaf" Size="Size.Small" Style="color:#087F5B; flex:none;" />
+                    <div class="prio-item-body" style="color:#53675D;">
+                        LEA: Review margins and stock levels before planning a bundle for your customers.
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        @* ───────── Recent transactions ───────── *@
+        <section class="card tx">
+            <div class="tx-head">
+                <div class="tx-title">
+                    <h3 class="card-title" style="margin:0;">Recent Transactions</h3>
+                    <span class="pill-soft">Latest entries</span>
+                </div>
+                <a class="tx-all" href="transactions">View All (@d.TotalTransactions) <MudIcon Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small" /></a>
+            </div>
+
+            <div class="tx-scroll">
+                <table class="tx-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th class="r">Amount</th>
+                            <th class="r">Evidence status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in d.Recent)
+                        {
+                            <tr>
+                                <td class="tx-date">@t.Date.ToString("MMM d", CultureInfo.InvariantCulture)</td>
+                                <td>
+                                    <div class="tx-desc">@t.Description</div>
+                                    <div class="tx-meta">@t.PaymentMethod • @t.Category</div>
+                                </td>
+                                <td class="r">
+                                    <span class="tx-amt @(t.Type == TransactionType.Income ? "pos" : "neg")">
+                                        @(t.Type == TransactionType.Income ? "+" : "−")@Php(t.Amount)
+                                    </span>
+                                </td>
+                                <td class="r">@EvidenceBadge(t.Evidence)</td>
+                            </tr>
+                        }
+                        @if (d.Recent.Count == 0)
+                        {
+                            <tr><td colspan="4" class="tx-empty">No transactions yet. Record your first one to get started.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="foot">
+            <MudIcon Icon="@Icons.Material.Outlined.Info" Size="Size.Small" />
+            Figures are based on your recorded transactions.
+        </footer>
+    </div>
+}
+
+@code {
+    private DashboardDto? _data;
+    private bool _loading = true;
+    private string? _question;
+
+    private readonly string[] _goals = { "Plan a restock", "Understand cash flow", "Prepare a bank loan portfolio" };
+
+    private List<ChartSeries<double>> _series = new();    
+    private string[] _labels = Array.Empty<string>();
+    private readonly ChartOptions _chartOptions = new()
+    {
+        ChartPalette = new[] { "#087F5B", "#B54436" },
+    };
+
+    private sealed record Priority(string Icon, string Color, string Title, string Body, string? LinkText, string? Href);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var auth = await AuthState.GetAuthenticationStateAsync();
+        var userId = auth.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId is not null)
+        {
+            _data = await Dashboard.GetAsync(userId);
+            if (_data is not null)
+            {
+                _labels = _data.Months.Select(m => m.Label).ToArray();
+                
+                _series = new List<ChartSeries<double>>
+                {
+                    new() { Name = "Cash in",  Data = _data.Months.Select(m => (double)m.Inflow).ToArray() },
+                    new() { Name = "Cash out", Data = _data.Months.Select(m => (double)m.Outflow).ToArray() },
+                };            }
+        }
+
+        _loading = false;
+    }
+
+    // ── LEA ──
+    private void Ask() => AskAbout(_question);
+
+    private void AskAbout(string? q)
+    {
+        var target = string.IsNullOrWhiteSpace(q) ? "adviser" : $"adviser?q={Uri.EscapeDataString(q.Trim())}";
+        Nav.NavigateTo(target);
+    }
+
+    private void OnAskKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") Ask();
+    }
+
+    // Rule-based for now; swap for real advisor output later.
+    private static List<Priority> BuildPriorities(DashboardDto d)
+    {
+        var list = new List<Priority>();
+
+        if (d.UnloggedDays > 0)
+        {
+            list.Add(new Priority(
+                Icons.Material.Outlined.ErrorOutline, "#BA1A1A",
+                $"{d.UnloggedDays} days unlogged in {d.MonthName}",
+                "Keep daily records and supporting evidence up to date.",
+                "Log missing dates", "transactions"));
+        }
+
+        list.Add(new Priority(
+            Icons.Material.Outlined.Inventory2, "#087F5B",
+            "Update ending inventory",
+            "Track ending stock to accurately calculate your true profit margins.",
+            "Update stock levels", "inventory"));
+
+        return list;
+    }
+
+    // ── Formatting helpers ──
+    private static string Php(decimal v) =>
+        (v < 0 ? "−₱" : "₱") + Math.Abs(v).ToString("N0", CultureInfo.InvariantCulture);
+
+    private static string Signed(decimal pct) =>
+        (pct >= 0 ? "+" : "−") + Math.Abs(pct).ToString("0.0", CultureInfo.InvariantCulture) + "%";
+
+    /// <summary>higherIsGood=false flips the colour for metrics like expenses.</summary>
+    private static bool IsGood(decimal pct, bool higherIsGood) => higherIsGood ? pct >= 0 : pct <= 0;
+
+    private RenderFragment DeltaPlain(decimal? pct, bool higherIsGood) => __b =>
+    {
+        if (pct is null) { __b.AddMarkupContent(0, "<span class=\"kpi-vs\">No prior data</span>"); return; }
+        var good = IsGood(pct.Value, higherIsGood);
+        __b.AddMarkupContent(1,
+            $"<span class=\"delta-plain {(good ? "good" : "bad")}\">{(pct >= 0 ? "▲" : "▼")} {Signed(pct.Value)}</span>");
+    };
+
+    private RenderFragment DeltaPill(decimal? pct, bool higherIsGood) => __b =>
+    {
+        if (pct is null) { __b.AddMarkupContent(0, "<span class=\"kpi-vs\">No prior data</span>"); return; }
+        var good = IsGood(pct.Value, higherIsGood);
+        __b.AddMarkupContent(1,
+            $"<span class=\"delta-pill {(good ? "good" : "bad")}\">{(pct >= 0 ? "▲" : "▼")} {Signed(pct.Value)}</span>");
+    };
+
+    private static RenderFragment EvidenceBadge(EvidenceStatus s) => __b =>
+    {
+        var (cls, text) = s switch
+        {
+            EvidenceStatus.ReceiptAttached => ("ev ev--receipt", "Receipt attached"),
+            EvidenceStatus.OwnerConfirmed => ("ev ev--owner", "Owner-confirmed"),
+            _ => ("ev ev--self", "Self-reported"),
+        };
+        __b.AddMarkupContent(0, $"<span class=\"{cls}\"><i></i>{text}</span>");
+    };
+}

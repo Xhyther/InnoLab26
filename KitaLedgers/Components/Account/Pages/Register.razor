@@ -1,4 +1,6 @@
-﻿@page "/Account/Register"
+﻿
+@page "/Account/Register"
+@layout EmptyBackLayout
 
 @using System.ComponentModel.DataAnnotations
 @using System.Text
@@ -15,66 +17,411 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Create an account | PaLEAsta!</PageTitle>
 
-<h1>Register</h1>
+<div class="register-page">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="register-container">
+        <MudGrid Spacing="8" Justify="Justify.Center" AlignItems="AlignItems.Center">
 
-<div class="row">
-    <div class="col-lg-6">
-        <StatusMessage Message="@Message"/>
-        <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator/>
-            <h2>Create a new account.</h2>
-            <hr/>
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
-                <label for="Input.Email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger"/>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password"/>
-                <label for="Input.Password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger"/>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password"/>
-                <label for="Input.ConfirmPassword">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger"/>
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
-    </div>
-    <div class="col-lg-4 col-lg-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr/>
-            <ExternalLoginPicker/>
-        </section>
-    </div>
+            @* Left: Welcome Hero *@
+            <MudItem xs="12" md="5" Class="register-hero">
+                
+                
+                <MudPaper Elevation="0" Class="d-inline-flex px-3 py-1 mb-2 rounded-pill login-badge">
+                    <MudText Typo="Typo.overline" Style="font-weight:700; line-height:1.6;">Get Started</MudText>
+                </MudPaper>
+
+                <MudText Typo="Typo.h1"
+                         Color="Color.Primary"
+                         Class="register-heading">
+                    Your business.<br />
+                    Your next step.<br />
+                    A little help from LEA.
+                </MudText>
+
+                <MudText Typo="Typo.body1"
+                         Color="Color.Secondary"
+                         Class="register-description">
+                    Create your account, organize your records,
+                    and start building your Financial Passport
+                    with PaLEAsta!
+                </MudText>
+
+                <MudImage Src="lea-mascot.svg"
+                          Alt="LEA Mascot"
+                          Width="250"
+                          Height="250"
+                          ObjectFit="ObjectFit.Contain"
+                          Class="register-mascot" />
+            </MudItem>
+
+            @* Right: Registration Card *@
+            <MudItem xs="12" md="5">
+                <MudPaper Outlined="true"
+                          Elevation="0"
+                          Class="register-card">
+
+                    <MudText Typo="Typo.h5"
+                             Color="Color.Primary"
+                             Class="register-card-title">
+                        Create your account
+                    </MudText>
+
+                    <MudText Typo="Typo.body2"
+                             Color="Color.Secondary"
+                             Class="register-card-subtitle">
+                        Join PaLEAsta! and take the next step
+                        toward managing your business.
+                    </MudText>
+
+                    <StatusMessage Message="@Message" />
+
+                    <EditForm Model="Input"
+                              method="post"
+                              OnValidSubmit="RegisterUser"
+                              FormName="register">
+
+                        <DataAnnotationsValidator />
+
+                        <ValidationSummary class="mud-error-text mud-typography-caption register-validation"
+                                           role="alert" />
+
+                        @* Email *@
+                        <div class="register-field">
+                            <label for="Input.Email" class="register-label">
+                                Email address
+                            </label>
+
+                            <InputText @bind-Value="Input.Email"
+                                       id="Input.Email"
+                                       class="register-input"
+                                       autocomplete="username"
+                                       aria-required="true"
+                                       placeholder="name@example.com" />
+
+                            <ValidationMessage For="() => Input.Email"
+                                               class="mud-error-text mud-typography-caption" />
+                        </div>
+
+                        @* Password *@
+                        <div class="register-field">
+                            <label for="Input.Password" class="register-label">
+                                Password
+                            </label>
+
+                            <InputText type="password"
+                                       @bind-Value="Input.Password"
+                                       id="Input.Password"
+                                       class="register-input"
+                                       autocomplete="new-password"
+                                       aria-required="true"
+                                       placeholder="At least 6 characters" />
+
+                            <ValidationMessage For="() => Input.Password"
+                                               class="mud-error-text mud-typography-caption" />
+
+                            <MudText Typo="Typo.caption"
+                                     Color="Color.Secondary"
+                                     Class="password-hint">
+                                Use at least 6 characters.
+                            </MudText>
+                        </div>
+
+                        @* Confirm Password *@
+                        <div class="register-field">
+                            <label for="Input.ConfirmPassword" class="register-label">
+                                Confirm password
+                            </label>
+
+                            <InputText type="password"
+                                       @bind-Value="Input.ConfirmPassword"
+                                       id="Input.ConfirmPassword"
+                                       class="register-input"
+                                       autocomplete="new-password"
+                                       aria-required="true"
+                                       placeholder="Re-enter your password" />
+
+                            <ValidationMessage For="() => Input.ConfirmPassword"
+                                               class="mud-error-text mud-typography-caption" />
+                        </div>
+
+                        @* Register *@
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Large"
+                                   FullWidth="true"
+                                   DisableElevation="true"
+                                   Class="register-submit">
+                            Create account
+                        </MudButton>
+
+                    </EditForm>
+
+                    <MudDivider Class="register-divider" />
+
+                    @* Existing Account *@
+                    <MudText Typo="Typo.body2"
+                             Color="Color.Secondary"
+                             Class="signin-caption">
+                        Already have an account?
+                    </MudText>
+
+                    <MudButton Href="@LoginUrl"
+                               Variant="Variant.Outlined"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               FullWidth="true"
+                               Class="register-secondary-button">
+                        Sign in
+                    </MudButton>
+                    
+
+                </MudPaper>
+            </MudItem>
+
+        </MudGrid>
+    </MudContainer>
 </div>
+
+<style>
+    .login-badge {
+        background: #E3F1EA !important;
+        color: #075E43;
+    }
+    
+    .register-page {
+        --mud-palette-primary: #0A7F59;
+        --mud-palette-primary-darken: #075E43;
+        --mud-palette-primary-lighten: #E3F1EA;
+        --mud-palette-primary-text: #FFFFFF;
+        --mud-palette-secondary: #5E6B64;
+        --mud-palette-primary-hover: rgba(10, 127, 89, 0.06);
+
+        min-height: 100vh;
+        background: #F8FAF7;
+    }
+
+    .register-container {
+        padding-top: 24px;
+        padding-bottom: 32px;
+    }
+
+    .register-badge {
+        background: #E3F1EA !important;
+        color: #075E43;
+    }
+
+    .register-hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .register-heading {
+        margin-bottom: 16px;
+        font-weight: 800;
+        line-height: 1.15;
+    }
+
+    .register-description {
+        max-width: 390px;
+        margin-bottom: 20px;
+        line-height: 1.7;
+    }
+
+    .register-mascot {
+        align-self: flex-start;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    .register-card {
+        width: 100%;
+        max-width: 500px;
+        margin-inline: auto;
+        padding: 32px;
+        border-color: #E1E7E1 !important;
+        border-radius: 16px;
+        background: #FFFFFF;
+    }
+
+    .register-card-title {
+        margin-bottom: 6px;
+        font-weight: 800;
+    }
+
+    .register-card-subtitle {
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .register-field {
+        margin-bottom: 18px;
+    }
+
+    .register-label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #24352D;
+    }
+
+    .register-input {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        height: 46px;
+        padding: 0 14px;
+        border: 1px solid #D9E0D9;
+        border-radius: 8px;
+        background: #F5F7F4;
+        color: #24352D;
+        font: inherit;
+        transition: border-color 0.15s ease,
+                    box-shadow 0.15s ease,
+                    background 0.15s ease;
+    }
+
+    .register-input::placeholder {
+        color: #929B95;
+    }
+
+    .register-input:focus {
+        outline: none;
+        border-color: #0A7F59;
+        background: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(10, 127, 89, 0.13);
+    }
+
+    .password-hint {
+        display: block;
+        margin-top: 5px;
+    }
+
+    .register-validation {
+        margin-bottom: 12px;
+    }
+
+    .register-submit {
+        min-height: 48px;
+        margin-top: 4px;
+        border-radius: 8px;
+        font-weight: 700;
+    }
+
+    .register-divider {
+        margin-top: 26px;
+        margin-bottom: 22px;
+    }
+
+    .signin-caption {
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    .register-secondary-button {
+        min-height: 46px;
+        border-color: #D9E0D9;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .external-register {
+        margin-top: 24px;
+    }
+
+    .external-register-caption {
+        display: block;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    @@media (max-width: 959.98px) {
+        .register-container {
+            padding-top: 16px;
+            padding-bottom: 24px;
+        }
+
+        .register-hero {
+            padding-bottom: 8px;
+        }
+
+        .register-heading {
+            font-size: 2.25rem;
+        }
+
+        .register-mascot {
+            width: 150px;
+            height: 150px;
+        }
+
+        .register-card {
+            max-width: 560px;
+            padding: 28px;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .register-heading {
+            font-size: 2rem;
+        }
+
+        .register-card {
+            padding: 24px 20px;
+        }
+    }
+
+    .login-badge {
+        align-self: flex-start;
+        background: #E3F1EA !important;
+        color: #075E43;
+        width: fit-content;
+    }
+</style>
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
 
-    [SupplyParameterFromForm] private InputModel Input { get; set; } = default!;
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = default!;
 
-    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
 
-    private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private string? Message =>
+        identityErrors is null
+            ? null
+            : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+
+    private string LoginUrl =>
+        NavigationManager.GetUriWithQueryParameters(
+            "Account/Login",
+            new Dictionary<string, object?>
+            {
+                ["ReturnUrl"] = ReturnUrl
+            });
 
     protected override void OnInitialized()
     {
-        Input ??= new();
+        Input ??= new InputModel();
     }
 
     public async Task RegisterUser(EditContext editContext)
     {
+        identityErrors = null;
+
         var user = CreateUser();
 
-        await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+        await UserStore.SetUserNameAsync(
+            user, Input.Email, CancellationToken.None);
+
         var emailStore = GetEmailStore();
-        await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+        await emailStore.SetEmailAsync(
+            user, Input.Email, CancellationToken.None);
+
         var result = await UserManager.CreateAsync(user, Input.Password);
 
         if (!result.Succeeded)
@@ -86,19 +433,35 @@
         Logger.LogInformation("User created a new account with password.");
 
         var userId = await UserManager.GetUserIdAsync(user);
+
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        code = WebEncoders.Base64UrlEncode(
+            Encoding.UTF8.GetBytes(code));
+
         var callbackUrl = NavigationManager.GetUriWithQueryParameters(
             NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-            new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
+            new Dictionary<string, object?>
+            {
+                ["userId"] = userId,
+                ["code"] = code,
+                ["returnUrl"] = ReturnUrl
+            });
 
-        await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
+        await EmailSender.SendConfirmationLinkAsync(
+            user,
+            Input.Email,
+            HtmlEncoder.Default.Encode(callbackUrl));
 
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
             RedirectManager.RedirectTo(
                 "Account/RegisterConfirmation",
-                new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
+                new()
+                {
+                    ["email"] = Input.Email,
+                    ["returnUrl"] = ReturnUrl
+                });
         }
         else
         {
@@ -115,8 +478,10 @@
         }
         catch
         {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                                                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
+            throw new InvalidOperationException(
+                $"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class " +
+                "and has a parameterless constructor.");
         }
     }
 
@@ -124,7 +489,8 @@
     {
         if (!UserManager.SupportsUserEmail)
         {
-            throw new NotSupportedException("The default UI requires a user store with email support.");
+            throw new NotSupportedException(
+                "The default UI requires a user store with email support.");
         }
 
         return (IUserEmailStore<ApplicationUser>)UserStore;
@@ -132,21 +498,26 @@
 
     private sealed class InputModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email address is required.")]
+        [EmailAddress(ErrorMessage = "Enter a valid email address.")]
         [Display(Name = "Email")]
-        public string Email { get; set; } = "";
+        public string Email { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "Password is required.")]
+        [StringLength(
+            100,
+            ErrorMessage = "The {0} must be at least {2} and at most {1} characters long.",
+            MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
-        public string Password { get; set; } = "";
+        public string Password { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Please confirm your password.")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; } = "";
+        [Compare(
+            nameof(Password),
+            ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; } = string.Empty;
     }
-
 }

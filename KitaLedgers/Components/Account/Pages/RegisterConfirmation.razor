@@ -1,4 +1,5 @@
 ﻿@page "/Account/RegisterConfirmation"
+@layout EmptyBackLayout
 
 @using System.Text
 @using Microsoft.AspNetCore.Identity
@@ -12,21 +13,35 @@
 
 <PageTitle>Register confirmation</PageTitle>
 
-<h1>Register confirmation</h1>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pb-12 justify-content-center">
+    
+    <MudText Typo="Typo.h1" 
+             Color="Color.Primary"
+             Align="Align.Center">
+        Register Confirmation
+    </MudText>
 
-<StatusMessage Message="@statusMessage"/>
+    <StatusMessage Message="@statusMessage"/>
 
-@if (emailConfirmationLink is not null)
-{
-    <p>
-        This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-        Normally this would be emailed: <a href="@emailConfirmationLink">Click here to confirm your account</a>
-    </p>
-}
-else
-{
-    <p role="alert">Please check your email to confirm your account.</p>
-}
+    @if (emailConfirmationLink is not null)
+    {
+        <p>
+            <a href="@emailConfirmationLink">
+                <MudText Typo="Typo.body1" 
+                         Align="Align.Center">
+                    Click here to confirm your account
+                </MudText>
+            </a>
+        </p>
+    }
+    else
+    {
+        <p role="alert">Please check your email to confirm your account.</p>
+    }
+
+</MudContainer>
+
+
 
 @code {
     private string? emailConfirmationLink;

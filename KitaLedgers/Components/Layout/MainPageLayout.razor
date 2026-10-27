@@ -1,0 +1,400 @@
+﻿
+@using MudBlazor
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@_theme"
+                 @bind-IsDarkMode="_isDarkMode" />
+
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1"
+               Dense="false"
+               Gutters="false"
+               Style="backdrop-filter: blur(10px);">
+
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge"
+                      Class="d-flex align-center px-4">
+
+            <button type="button"
+                    @onclick="DrawerToggle"
+                    class="svg-menu-btn"
+                    aria-label="@(_drawerOpen ? "Collapse navigation" : "Expand navigation")"
+                    aria-controls="nav-drawer"
+                    aria-expanded="@_drawerOpen">
+
+                <MudImage Src="LOGO-Leaf.svg"
+                          Alt="PaLEAsta logo"
+                          Width="32"
+                          Height="32"
+                          ObjectFit="ObjectFit.Contain" />
+            </button>
+
+            <MudImage Src="PaLEAsta!.svg"
+                      Alt="PaLEAsta!"
+                      Width="120"
+                      Height="40"
+                      ObjectFit="ObjectFit.Contain"
+                      Class="ms-2" />
+
+            <MudSpacer />
+
+            <MudIconButton Icon="@DarkLightModeButtonIcon"
+                           Color="Color.Inherit"
+                           OnClick="DarkModeToggle"
+                           AriaLabel="Toggle dark mode" />
+
+            <MudIconButton Icon="@Icons.Material.Rounded.Info"
+                           Color="Color.Inherit"
+                           Edge="Edge.End"
+                           Href="https://github.com/Zanpakuto/Hazelnet_Web/wiki"
+                           Target="_blank"
+                           AriaLabel="Help and documentation" />
+        </MudContainer>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen"
+               id="nav-drawer"
+               Variant="DrawerVariant.Mini"
+               Breakpoint="Breakpoint.None"
+               ClipMode="DrawerClipMode.Always"
+               Elevation="2"
+               Width="260px"
+               MiniVariantWidth="64px">
+
+        <NavMenu DrawerOpen="@_drawerOpen" />
+    </MudDrawer>
+
+    <MudMainContent Class="main-content">
+        <div class="main-content-inner">
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <button type="button" class="dismiss" aria-label="Dismiss error">
+        🗙
+    </button>
+</div>
+
+<style>
+    .svg-menu-btn {
+        background: transparent;
+        border: none;
+        padding: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .svg-menu-btn:hover {
+        background-color: rgba(var(--mud-palette-primary-rgb), 0.08);
+    }
+
+    .svg-menu-btn:focus-visible {
+        outline: 2px solid var(--mud-palette-primary);
+        outline-offset: 2px;
+    }
+
+    .main-content {
+        padding-top: 64px;
+        min-height: 100vh;
+        background: var(--mud-palette-background);
+    }
+
+    .main-content-inner {
+        padding: 24px;
+        min-width: 0;
+    }
+
+    #blazor-error-ui {
+        display: none;
+        position: fixed;
+        inset: auto 0 0 0;
+        z-index: 2000;
+        padding: 0.75rem 1.25rem;
+        background: #fff4ce;
+        color: #332b00;
+    }
+
+    #blazor-error-ui .dismiss {
+        float: right;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    @@media (max-width: 600px) {
+        .main-content-inner {
+            padding: 16px;
+        }
+    }
+</style>
+
+@code {
+    private bool _isDarkMode;
+    private bool _drawerOpen;
+    private MudTheme _theme = default!;
+
+    protected override void OnInitialized()
+    {
+        _theme = new MudTheme
+        {
+            PaletteLight = _lightPalette,
+            PaletteDark = _darkPalette,
+            Typography = _typography,
+            LayoutProperties = new LayoutProperties
+            {
+                DefaultBorderRadius = "8px",
+                DrawerWidthLeft = "260px",
+                AppbarHeight = "64px"
+            }
+        };
+    }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private string DarkLightModeButtonIcon =>
+        _isDarkMode
+            ? Icons.Material.Rounded.LightMode
+            : Icons.Material.Outlined.DarkMode;
+
+    private readonly PaletteLight _lightPalette = new()
+    {
+        Primary = "#176B50",
+        PrimaryDarken = "#10533E",
+        PrimaryLighten = "#3D9677",
+        PrimaryContrastText = "#FFFFFF",
+
+        Secondary = "#DDF3E7",
+        SecondaryContrastText = "#176B50",
+        Tertiary = "#E9A23B",
+
+        Info = "#2878B5",
+        InfoContrastText = "#FFFFFF",
+        Success = "#16804A",
+        SuccessContrastText = "#FFFFFF",
+        Warning = "#A85D08",
+        WarningContrastText = "#FFFFFF",
+        Error = "#C93636",
+        ErrorContrastText = "#FFFFFF",
+
+        Background = "#F8FAF7",
+        BackgroundGray = "#F0F4EF",
+        Surface = "#FFFFFF",
+        DrawerBackground = "#FFFFFF",
+
+        AppbarBackground = "#F8FAF7",
+        AppbarText = "#18352B",
+
+        TextPrimary = "#1F3028",
+        TextSecondary = "#65746B",
+        TextDisabled = "#A8B2AB",
+
+        ActionDefault = "#176B50",
+        ActionDisabled = "#BEC8C0",
+        ActionDisabledBackground = "#E9EEE9",
+
+        Divider = "#E1E8E1",
+        LinesDefault = "#E1E8E1",
+        TableLines = "#E8EDE8",
+
+        GrayDefault = "#929D94",
+        GrayLight = "#DCE4DC",
+        GrayLighter = "#F1F5F0",
+        GrayDark = "#59665D",
+        GrayDarker = "#303C33",
+
+        OverlayLight = "rgba(248,250,247,0.8)",
+        OverlayDark = "rgba(24,53,43,0.5)"
+    };
+
+    private readonly PaletteDark _darkPalette = new()
+    {
+        Primary = "#58B995",
+        PrimaryDarken = "#319A75",
+        PrimaryLighten = "#8AD5B7",
+        PrimaryContrastText = "#102B20",
+
+        Secondary = "#233F32",
+        SecondaryContrastText = "#B4EBD0",
+        Tertiary = "#F3B955",
+
+        Info = "#73B9ED",
+        InfoContrastText = "#102A3C",
+        Success = "#65D69A",
+        SuccessContrastText = "#103421",
+        Warning = "#F3C267",
+        WarningContrastText = "#3C280A",
+        Error = "#FF8585",
+        ErrorContrastText = "#431818",
+
+        Background = "#111A15",
+        BackgroundGray = "#0D1511",
+        Surface = "#1A2720",
+        DrawerBackground = "#111A15",
+
+        AppbarBackground = "#111A15",
+        AppbarText = "#E5F0E8",
+
+        TextPrimary = "#E5F0E8",
+        TextSecondary = "#A3B5A8",
+        TextDisabled = "#68796D",
+
+        ActionDefault = "#B4EBD0",
+        ActionDisabled = "#526357",
+        ActionDisabledBackground = "#25342A",
+
+        Divider = "#304238",
+        LinesDefault = "#304238",
+        TableLines = "#283A2F",
+
+        GrayDefault = "#718477",
+        GrayLight = "#2A3B30",
+        GrayLighter = "#1F3026",
+        GrayDark = "#B2C2B6",
+        GrayDarker = "#E5F0E8",
+
+        DrawerText = "#B2C2B6",
+        DrawerIcon = "#58B995",
+
+        OverlayLight = "rgba(26,39,32,0.7)",
+        OverlayDark = "rgba(0,0,0,0.6)"
+    };
+
+    private readonly Typography _typography = new()
+    {
+        Default = new DefaultTypography
+        {
+            FontFamily = new[] { "Figtree", "system-ui", "sans-serif" },
+            FontSize = "0.9375rem",
+            FontWeight = "400",
+            LineHeight = "1.6",
+            LetterSpacing = "0"
+        },
+
+        H1 = new H1Typography
+        {
+            FontFamily = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight = "800",
+            FontSize = "2.5rem",
+            LineHeight = "1.2",
+            LetterSpacing = "-0.02em"
+        },
+
+        H2 = new H2Typography
+        {
+            FontFamily = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight = "700",
+            FontSize = "2rem",
+            LineHeight = "1.25",
+            LetterSpacing = "-0.015em"
+        },
+
+        H3 = new H3Typography
+        {
+            FontFamily = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight = "600",
+            FontSize = "1.5rem",
+            LineHeight = "1.3",
+            LetterSpacing = "-0.01em"
+        },
+
+        H4 = new H4Typography
+        {
+            FontFamily = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight = "600",
+            FontSize = "1.25rem",
+            LineHeight = "1.4",
+            LetterSpacing = "-0.005em"
+        },
+
+        H5 = new H5Typography
+        {
+            FontFamily = new[] { "Plus Jakarta Sans", "sans-serif" },
+            FontWeight = "600",
+            FontSize = "1.125rem",
+            LineHeight = "1.4"
+        },
+
+        H6 = new H6Typography
+        {
+            FontFamily = new[] { "Figtree", "sans-serif" },
+            FontWeight = "700",
+            FontSize = "0.75rem",
+            LineHeight = "1.5",
+            LetterSpacing = "0.08em",
+            TextTransform = "uppercase"
+        },
+
+        Body1 = new Body1Typography
+        {
+            FontSize = "0.9375rem",
+            LineHeight = "1.6"
+        },
+
+        Body2 = new Body2Typography
+        {
+            FontSize = "0.875rem",
+            LineHeight = "1.55",
+            FontWeight = "400"
+        },
+
+        Subtitle1 = new Subtitle1Typography
+        {
+            FontSize = "0.9375rem",
+            FontWeight = "600",
+            LineHeight = "1.5"
+        },
+
+        Subtitle2 = new Subtitle2Typography
+        {
+            FontSize = "0.875rem",
+            FontWeight = "600",
+            LineHeight = "1.5"
+        },
+
+        Button = new ButtonTypography
+        {
+            FontFamily = new[] { "Figtree", "sans-serif" },
+            FontWeight = "600",
+            FontSize = "0.875rem",
+            LetterSpacing = "0.02em",
+            TextTransform = "none"
+        },
+
+        Caption = new CaptionTypography
+        {
+            FontSize = "0.75rem",
+            FontWeight = "400",
+            LineHeight = "1.5",
+            LetterSpacing = "0.01em"
+        },
+
+        Overline = new OverlineTypography
+        {
+            FontSize = "0.6875rem",
+            FontWeight = "700",
+            LineHeight = "1.5",
+            LetterSpacing = "0.1em",
+            TextTransform = "uppercase"
+        }
+    };
+}

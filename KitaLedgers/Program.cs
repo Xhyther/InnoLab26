@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,14 @@ using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMudServices();
 
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddMudServices();
+
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
@@ -29,13 +32,21 @@ builder.Services.AddAuthentication(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+
+builder.Services.AddDbContextFactory<ApplicationDbContext>(o =>
+    o.UseSqlite(connectionString));
+
+builder.Services.AddScoped(sp =>
+    sp.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
+
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
-        options.SignIn.RequireConfirmedAccount = true;
+        options.SignIn.RequireConfirmedAccount = false;
         options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -49,7 +60,20 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
+    app.MapGet("/dev/seed", async (HttpContext http, ApplicationDbContext db) =>
+    {
+        var uid = http.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (uid is null) return Results.Unauthorized();
+
+        if (!await db.Users.AnyAsync(u => u.Id == uid))
+        {
+            var ids = await db.Users.Select(u => new { u.Id, u.Email }).ToListAsync();
+            return Results.Json(new { cookieUserId = uid, usersInDb = ids });
+        }
+
+        await DemoDataSeeder.SeedAsync(db, uid);
+        return Results.Redirect("/overview");
+    }).RequireAuthorization();
 }
 else
 {

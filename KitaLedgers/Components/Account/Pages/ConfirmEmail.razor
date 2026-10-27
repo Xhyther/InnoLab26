@@ -10,8 +10,15 @@
 
 <PageTitle>Confirm email</PageTitle>
 
-<h1>Confirm email</h1>
-<StatusMessage Message="@statusMessage"/>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pb-12 justify-content-center">
+    <MudText Typo="Typo.h3" 
+             Color="Color.Primary"
+             Align="Align.Left">
+        Confirm email    
+        </MudText>
+    <StatusMessage Message="@statusMessage"/>
+</MudContainer>
+
 
 @code {
     private string? statusMessage;
@@ -41,7 +48,22 @@
             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
             var result = await UserManager.ConfirmEmailAsync(user, code);
             statusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+
+            WaitThreeSecondsAsync();
+            RedirectManager.RedirectTo("/Overview");
         }
+    }
+    
+    private async Task WaitThreeSecondsAsync()
+    {
+        // Do something before the wait (e.g., show a loading state)
+        StateHasChanged();
+
+        // Wait for 3000 milliseconds (3 seconds)
+        await Task.Delay(3000);
+
+        // Do something after the wait (e.g., hide loading state, update UI)
+        StateHasChanged();
     }
 
 }
