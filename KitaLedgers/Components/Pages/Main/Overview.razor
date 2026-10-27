@@ -132,16 +132,7 @@ else
             <article class="card chart-card">
                 <h3 class="card-title">Monthly cash flows</h3>
                 <p class="card-sub">@d.PeriodLabel</p>
-                <div class="legend">
-                    <span><i style="background:#087F5B"></i>Cash in</span>
-                    <span><i style="background:#B54436"></i>Cash out</span>
-                </div>
-                <MudChart T="double" 
-                    ChartType="ChartType.Line"
-                          ChartSeries="_series"
-                          XAxisLabels="_labels"
-                          ChartOptions="_chartOptions"
-                          Width="100%" Height="240px" />
+                <CashFlowChart Months="d.Months" />
                 <p class="card-sub">Based on posted transactions. Voided entries are excluded.</p>
             </article>
 

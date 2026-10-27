@@ -24,8 +24,7 @@ public sealed record DashboardDto(
     IReadOnlyList<RecentTx> Recent,
     int TotalTransactions);
 
-public sealed record MonthPoint(string Label, decimal Inflow, decimal Outflow);
-
+public sealed record MonthPoint(string Label, decimal Inflow, decimal Outflow, decimal LoanInflow);
 public sealed record RecentTx(
     long Id,
     DateOnly Date,
@@ -112,7 +111,8 @@ public sealed class DashboardService(IDbContextFactory<ApplicationDbContext> fac
             return new MonthPoint(
                 s.ToString("MMM", CultureInfo.InvariantCulture),
                 Sum(m, TransactionType.Income),
-                Sum(m, TransactionType.Expense));
+                Sum(m, TransactionType.Expense),
+                m.Where(r => r.Type == TransactionType.Income && r.IsLoan).Sum(r => r.Amount));
         }).ToList();
 
         var loggedDays = cur.Select(r => r.Date).Distinct().Count();

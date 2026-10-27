@@ -1,0 +1,32 @@
+﻿.cf { display: flex; flex-direction: column; gap: 8px; }
+
+.cf-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #53675D; }
+.cf-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.sw-in { background: #087F5B; }
+.sw-out { background: #B54436; }
+.sw-loan { background: repeating-linear-gradient(45deg, #CFEDE0 0 3px, #8CC9AE 3px 5px); }
+
+.cf-svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+.cf-grid { stroke: #E4ECE7; stroke-width: 1; }
+.cf-base { stroke: #C9D6CF; }
+.cf-axis { font-size: 11px; fill: #7A8B82; }
+
+.cf-in { fill: #087F5B; }
+.cf-out { fill: #B54436; }
+.cf-bar { transition: opacity .15s ease; }
+
+.cf-hover { fill: transparent; }
+.cf-group:hover .cf-hover { fill: rgba(8, 127, 91, .06); }
+.cf-group:hover .cf-bar { opacity: .85; }
+
+.cf-current .cf-bar { opacity: .55; }
+.cf-current:hover .cf-bar { opacity: .75; }
+
+.cf-month { font-size: 12px; font-weight: 600; fill: #183C2C; }
+.cf-net { font-size: 11px; font-weight: 600; }
+.cf-net.pos { fill: #087F5B; }
+.cf-net.neg { fill: #B54436; }
+
+.cf-foot { margin: 0; font-size: 11px; color: #7A8B82; }

@@ -1,0 +1,154 @@
+﻿@using System.Globalization
+@using KitaLedgers.Data
+
+@if (Months is { Count: > 0 })
+{
+    <div class="cf">
+        <div class="cf-legend">
+            <span><i class="sw sw-in"></i>Sales &amp; other income</span>
+            @if (_hasLoan)
+            {
+                <span><i class="sw sw-loan"></i>Loan proceeds</span>
+            }
+            <span><i class="sw sw-out"></i>Cash out</span>
+        </div>
+
+        <svg viewBox="0 0 @W @H" class="cf-svg" role="img" aria-label="Monthly cash in and cash out">
+            <defs>
+                <pattern id="cf-loan" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+                    <rect width="6" height="6" fill="#CFEDE0" />
+                    <line x1="0" y1="0" x2="0" y2="6" stroke="#087F5B" stroke-width="2" opacity=".45" />
+                </pattern>
+            </defs>
+
+            @* Gridlines + y-axis labels *@
+            @for (var t = 0; t <= Ticks; t++)
+            {
+                var v = _step * t;
+                var y = Y(v);
+                <g>
+                    <line class="cf-grid @(t == 0 ? "cf-base" : "")" x1="@F(PadL)" x2="@F(W - PadR)" y1="@F(y)" y2="@F(y)" />
+                    <text class="cf-axis" x="@F(PadL - 8)" y="@F(y + 4)" text-anchor="end">@Short(v)</text>
+                </g>
+            }
+
+            @* Month groups *@
+            @for (var i = 0; i < Months.Count; i++)
+            {
+                var m = Months[i];
+                var isCurrent = i == Months.Count - 1;
+                var cx = PadL + _groupW * (i + 0.5);
+
+                var loan = (double)m.LoanInflow;
+                var inflow = (double)m.Inflow;
+                var sales = inflow - loan;
+                var outflow = (double)m.Outflow;
+                var opNet = sales - outflow;
+
+                var inX = cx - _barW - 2;
+                var outX = cx + 2;
+
+                <g class="cf-group @(isCurrent ? "cf-current" : "")">
+                    <title>@Tooltip(m.Label, isCurrent, sales, loan, outflow, opNet)</title>
+                    <rect class="cf-hover" x="@F(cx - _groupW / 2)" y="@F(PadT)" width="@F(_groupW)" height="@F(PlotH)" />
+
+                    @if (loan > 0)
+                    {
+                        @if (sales > 0)
+                        {
+                            <rect class="cf-bar cf-in" x="@F(inX)" y="@F(Y(sales))" width="@F(_barW)" height="@F(Base - Y(sales))" />
+                        }
+                        <path class="cf-bar" fill="url(#cf-loan)" d="@TopRounded(inX, Y(inflow), _barW, Y(Math.Max(sales, 0)) - Y(inflow))" />
+                    }
+                    else if (sales > 0)
+                    {
+                        <path class="cf-bar cf-in" d="@TopRounded(inX, Y(sales), _barW, Base - Y(sales))" />
+                    }
+
+                    @if (outflow > 0)
+                    {
+                        <path class="cf-bar cf-out" d="@TopRounded(outX, Y(outflow), _barW, Base - Y(outflow))" />
+                    }
+
+                    <text class="cf-month" x="@F(cx)" y="@F(Base + 18)" text-anchor="middle">@m.Label@(isCurrent ? "*" : "")</text>
+                    <text class="cf-net @(opNet >= 0 ? "pos" : "neg")" x="@F(cx)" y="@F(Base + 34)" text-anchor="middle">@SignedShort(opNet)</text>
+                </g>
+            }
+        </svg>
+
+        <p class="cf-foot">Bottom row: operating net (sales − expenses, loans excluded). * Current month, to date. Hover a month for details.</p>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<MonthPoint> Months { get; set; } = Array.Empty<MonthPoint>();
+
+    // Geometry (SVG units; the chart scales to its container width)
+    private const double W = 640, H = 290;
+    private const double PadL = 52, PadR = 8, PadT = 10, PadB = 50;
+    private const int Ticks = 4;
+    private static double PlotH => H - PadT - PadB;
+    private static double Base => PadT + PlotH;
+
+    private double _step = 1000, _max = 4000, _groupW, _barW;
+    private bool _hasLoan;
+
+    private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
+
+    protected override void OnParametersSet()
+    {
+        if (Months.Count == 0) return;
+
+        _hasLoan = Months.Any(m => m.LoanInflow > 0);
+
+        var top = Months.Max(m => Math.Max((double)m.Inflow, (double)m.Outflow));
+        _step = NiceStep(top, Ticks);
+        _max = _step * Ticks;
+
+        _groupW = (W - PadL - PadR) / Months.Count;
+        _barW = Math.Min(26, _groupW * 0.3);
+    }
+
+    private double Y(double v) => PadT + PlotH * (1 - v / _max);
+
+    // Bar with only the top corners rounded
+    private static string TopRounded(double x, double y, double w, double h, double r = 5)
+    {
+        if (h <= 0) return "";
+        r = Math.Min(r, Math.Min(h, w / 2));
+        return $"M{F(x)},{F(y + h)} V{F(y + r)} Q{F(x)},{F(y)} {F(x + r)},{F(y)} " +
+               $"H{F(x + w - r)} Q{F(x + w)},{F(y)} {F(x + w)},{F(y + r)} V{F(y + h)} Z";
+    }
+
+    // 1, 2, 2.5, 5 × 10^n steps so axis labels are round numbers
+    private static double NiceStep(double max, int ticks)
+    {
+        if (max <= 0) return 1000;
+        var raw = max / ticks;
+        var mag = Math.Pow(10, Math.Floor(Math.Log10(raw)));
+        var norm = raw / mag;
+        var nice = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10;
+        return nice * mag;
+    }
+
+    private static string F(double v) => v.ToString("0.#", Inv);
+
+    private static string Short(double v)
+    {
+        var a = Math.Abs(v);
+        return a >= 1_000_000 ? "₱" + (a / 1_000_000).ToString("0.#", Inv) + "M"
+             : a >= 1_000 ? "₱" + (a / 1_000).ToString("0.#", Inv) + "k"
+             : "₱" + a.ToString("0", Inv);
+    }
+
+    private static string SignedShort(double v) => (v >= 0 ? "+" : "−") + Short(v);
+
+    private static string Php(double v) => "₱" + Math.Abs(v).ToString("N0", Inv);
+
+    private static string Tooltip(string label, bool current, double sales, double loan, double outflow, double opNet) =>
+        $"{label}{(current ? " (to date)" : "")}\n" +
+        $"Sales & other income: {Php(sales)}\n" +
+        (loan > 0 ? $"Loan proceeds: {Php(loan)}\n" : "") +
+        $"Cash out: {Php(outflow)}\n" +
+        $"Operating net: {(opNet >= 0 ? "+" : "−")}{Php(opNet)}";
+}
