@@ -88,7 +88,7 @@ export function TransactionTable({
               </td>
               <td>
                 <p className="font-semibold">{t.description}</p>
-                <p className="text-xs text-muted">{t.cashKind==="loan_disbursement"?"Cash inflow · financing":t.category}</p>
+                <p className="text-xs text-muted">{t.cashKind==="loan_disbursement"?"Cash inflow · financing":t.cashKind==="loan_repayment"?"Cash outflow · loan payment":t.category}</p>
                 {t.loanId&&loans?.find(l=>l.id===t.loanId)&&<span className="due-badge">{dueLabel(loans.find(l=>l.id===t.loanId)!)}</span>}
               </td>
               <td className="text-muted">{t.payment}</td>
@@ -183,7 +183,7 @@ export function Overview({ state, onChange, onTransaction, onAsk }: WorkspacePro
           <span>Cash movement: {money(values.balance)}</span>
           <span>Non-loan inflows: {money(values.nonLoanInflow)}</span>
           <span className="text-outflow-light">
-            Recorded expenses: {money(values.outflow)}
+            Cash outflows: {money(values.outflow)}
           </span>
         </div>
         <form
@@ -219,8 +219,7 @@ export function Overview({ state, onChange, onTransaction, onAsk }: WorkspacePro
           ))}
         </div>
         <p className="mt-3 text-xs text-white/70">
-          LEA uses the configured Gemini API. Review your records before relying
-          on advice.
+          LEA uses your business records to help you compare plans and decisions.
         </p>
       </section>
       <div className="grid gap-4 sm:grid-cols-3">
@@ -239,7 +238,7 @@ export function Overview({ state, onChange, onTransaction, onAsk }: WorkspacePro
         <Stat
           label="Cash outflow"
           value={money(values.outflow)}
-          caption="Inventory, utilities and other expenses"
+          caption="Expenses and recorded loan payments"
           icon="outflow"
         />
       </div>
@@ -365,7 +364,7 @@ export function Transactions({ state, onChange, onTransaction, notify }: Workspa
     <>
       <PageTitle
         title="Transactions Ledger"
-        description="Track every sale, expense and supporting receipt."
+        description="Track sales, expenses, financing and supporting receipts."
         action={
           <div className="flex flex-wrap gap-3">
             <Button variant="secondary" onClick={download}>
@@ -388,9 +387,9 @@ export function Transactions({ state, onChange, onTransaction, notify }: Workspa
         />
         <Stat
           label="Total outflow"
-          subtitle="Gastos"
+          subtitle="Lumabas"
           value={money(values.outflow)}
-          caption="Restock, utilities & bills"
+          caption="Expenses and loan payments"
           icon="outflow"
         />
         <Stat
@@ -500,7 +499,8 @@ export function Transactions({ state, onChange, onTransaction, notify }: Workspa
             {Object.entries({
               Date: dateLabel(selected.date),
               Description: selected.description,
-              Category: selected.category,
+              Category: selected.cashKind==="loan_disbursement"?"Cash inflow · financing":selected.cashKind==="loan_repayment"?"Cash outflow · loan payment":selected.category,
+              ...(selected.loanPayment?{"Principal paid":money(selected.loanPayment.principalCents,true),"Interest / fees paid":money(selected.loanPayment.interestCents,true)}:{}),
               Amount: money(selected.amountCents, true),
               Direction: selected.type,
               Payment: selected.payment,
@@ -730,11 +730,11 @@ export function Adviser({
             {[
               ["Net cash movement", money(values.balance)],
               ["Recorded inflows", money(values.inflow)],
-              ["Recorded expenses", money(values.outflow)],
+              ["Cash outflows", money(values.outflow)],
               ["Receipt coverage", receiptCoverage(state.transactions) + "%"],
             ].map(([label, value]) => <div className="flex justify-between gap-4" key={label}>
               <span className="text-muted">{label}</span>
-              <strong className={`amount ${label === "Recorded expenses" ? "text-outflow" : ""}`}>{value}</strong>
+              <strong className={`amount ${label === "Cash outflows" ? "text-outflow" : ""}`}>{value}</strong>
             </div>)}
             <details className="rounded-xl border border-line p-3">
               <summary className="font-semibold">Transaction history · {state.transactions.length} entries</summary>
@@ -765,247 +765,7 @@ export function Adviser({
 }
 
 
-export function Passport({ state }: WorkspaceProps) {
-  const values = totals(state.transactions);
-  const days = new Set(
-    state.transactions
-      .filter((t) => t.date.startsWith("2026-10"))
-      .map((t) => t.date),
-  ).size;
-  return (
-    <>
-      <PageTitle
-        title="Financial Passport"
-        description="A clear business portfolio for a bank’s loan assessment."
-        action={
-          <Button onClick={() => go("report")}>Preview portfolio →</Button>
-        }
-      />
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Stat
-          label="Reporting period"
-          value="October 2026"
-          caption="Demo business activity"
-        />
-        <Stat
-          label="Record coverage"
-          value={`${days} of 31 days`}
-          caption={`${Math.max(0, 31 - days)} days without entries`}
-        />
-        <Stat
-          label="Receipt coverage"
-          value={receiptCoverage(state.transactions) + "%"}
-          caption="Of recorded expense entries"
-        />
-      </div>
-      <Card className="space-y-5 bg-soft">
-        <Badge>Draft · Review before sharing</Badge>
-        <h3>Finish the details behind your business story.</h3>
-        <p className="text-muted">
-          A complete portfolio helps a lender understand your business. It does
-          not guarantee loan eligibility or approval.
-        </p>
-        {[
-          [
-            "Complete missing record days",
-            "Review entries and confirm whether missing days had activity.",
-            "Review transactions",
-            "transactions",
-          ],
-          [
-            "Confirm closing inventory",
-            "Check stock quantities and costs for the reporting period.",
-            "Review inventory",
-            "inventory",
-          ],
-          [
-            "Review business identity",
-            "Confirm your business and owner details.",
-            "Review business profile",
-            "settings",
-          ],
-        ].map(([title, body, label, route]) => (
-          <div
-            className="flex flex-wrap items-center justify-between gap-4"
-            key={title}
-          >
-            <div>
-              <p className="font-semibold">{title}</p>
-              <p className="mt-1 text-muted">{body}</p>
-            </div>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                go(route as "transactions" | "inventory" | "settings")
-              }
-            >
-              {label}
-            </Button>
-          </div>
-        ))}
-      </Card>
-      <Card className="space-y-5">
-        <h3>Financial snapshot</h3>
-        <div className="grid gap-6 sm:grid-cols-3">
-          {[
-            ["Recorded inflows", values.inflow],
-            ["Recorded expenses", values.outflow],
-            ["Net cash movement", values.balance],
-          ].map(([label, amount]) => (
-            <div key={label}>
-              <p className="text-muted">{label}</p>
-              <p className={`mt-2 text-[28px] font-bold ${label === "Recorded expenses" ? "text-outflow" : "text-forest"}`}>
-                {money(Number(amount))}
-              </p>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-muted">
-          Net cash movement reflects recorded inflows less outflows. Confirm
-          missing entries, liabilities and other costs before submission.
-        </p>
-      </Card>
-      <div className="table-wrap">
-        <table className="data-table min-w-[650px]">
-          <thead>
-            <tr>
-              <th>Record</th>
-              <th>Current status</th>
-              <th>Next step</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[
-              [
-                "Business & owner profile",
-                "Owner-entered",
-                "Confirm identity and business details",
-              ],
-              ["Transaction summary", "Draft", "Review completeness and dates"],
-              [
-                "Receipt evidence",
-                receiptCoverage(state.transactions) + "% expense coverage",
-                "Attach available receipts",
-              ],
-              [
-                "Lender documents",
-                "Not connected",
-                "Check the selected bank’s requirements",
-              ],
-            ].map((row) => (
-              <tr key={row[0]}>
-                {row.map((value, i) => (
-                  <td key={i}>{value}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <Card className="space-y-4">
-        <h3>You choose when to share.</h3>
-        <p className="text-muted">
-          Preview and print a portfolio for review. No bank connection or
-          document submission exists in this prototype.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Button onClick={() => go("report")}>Preview portfolio →</Button>
-          <Button variant="secondary" onClick={() => go("settings")}>
-            Manage preferences
-          </Button>
-        </div>
-      </Card>
-    </>
-  );
-}
-export function Report({ state }: { state: BusinessState }) {
-  const values = totals(state.transactions),
-    stock = state.products.reduce(
-      (s, p) => s + Math.round(p.quantity * p.costCents),
-      0,
-    );
-  return (
-    <div className="mx-auto max-w-[1000px] space-y-6 px-5 py-8">
-      <div className="no-print flex flex-wrap justify-between gap-3">
-        <Button variant="secondary" onClick={() => go("passport")}>
-          ← Back to Financial Passport
-        </Button>
-        <Button onClick={() => window.print()}>Print / Save PDF</Button>
-      </div>
-      <article className="report card space-y-7 p-8 md:p-12">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2>PaLEAsta!</h2>
-          <Badge>Prototype · Draft</Badge>
-        </div>
-        <h1 className="text-[40px]">Financial Passport</h1>
-        <h2>{state.profile.name}</h2>
-        <p className="text-muted">
-          Owner: {state.profile.owner}
-          <br />
-          {state.profile.location}
-          <br />
-          Account snapshot · all recorded entries
-        </p>
-        <section className="space-y-4 rounded-2xl bg-soft p-6">
-          <h3>Recorded business standing</h3>
-          {[
-            ["Recorded cash inflows", values.inflow],
-            ["Of which: loan proceeds",values.loanInflow],
-            ["Recorded expenses / outflows", values.outflow],
-            ["Net cash movement", values.balance],
-            ["Inventory at recorded cost", stock],
-          ].map(([label, amount]) => (
-            <div className="flex justify-between gap-4" key={label}>
-              <span className="text-muted">{label}</span>
-              <strong className={`amount ${label === "Recorded expenses / outflows" ? "text-outflow" : ""}`}>{money(Number(amount), true)}</strong>
-            </div>
-          ))}
-        </section>
-        <h3>Business profile & operating context</h3>
-        <p className="text-muted">
-          {state.profile.businessType} based in {state.profile.location}. This
-          portfolio brings together owner-recorded transactions, inventory and
-          available evidence.
-        </p>
-        <h3>Record quality & supporting evidence</h3>
-        <ul className="list-disc space-y-3 pl-5 text-muted">
-          <li>
-            {state.transactions.length} transaction entries are included in this
-            local account.
-          </li>
-          <li>
-            {receiptCoverage(state.transactions)}% of recorded expenses have a
-            receipt filename attached.
-          </li>
-          <li>
-            Identity, registration, closing stock, liabilities and other
-            commitments require independent confirmation.
-          </li>
-          <li>
-            Receipt contents are not stored or verified by this prototype.
-          </li>
-        </ul>
-        <h3>Owner-reported loan commitments</h3>
-<p className="text-muted">{state.loans == null ? "Loan information has not been recorded; outstanding debt is unknown." : state.loans.length ? "These balances and schedules are owner-reported and require confirmation." : "The owner has declared no outstanding loans; this has not been independently verified."}</p>
-{state.loans?.map(l => <p key={l.id} className="text-sm text-muted">{l.lender}: {money(l.outstandingCents,true)} outstanding as of {dateLabel(l.balanceAsOfDate)}; {money(l.repaymentCents,true)} {l.repaymentFrequency}, next due {dateLabel(l.nextDueDate)}.</p>)}
-<h3>Source records</h3>
-        <p className="text-muted">
-          PaLEAsta demo transaction ledger · Inventory register · Receipt
-          filenames
-        </p>
-        <section className="space-y-2 rounded-xl bg-page p-5">
-          <strong>Draft for owner review</strong>
-          <p className="text-muted">
-            This is a prototype summary, not an audit, credit rating or loan
-            approval. The bank independently assesses eligibility, completeness
-            and repayment capacity. Do not submit sample data as actual business
-            records.
-          </p>
-        </section>
-      </article>
-    </div>
-  );
-}
+export { Passport, Report } from "./FinancialPassport";
 export function Settings({ state, onChange, notify, onReset }: WorkspaceProps) {
   function save(
     e: FormEvent<HTMLFormElement>,
@@ -1275,6 +1035,7 @@ export function Help({ onAsk }: WorkspaceProps) {
     </>
   );
 }
+
 
 
 

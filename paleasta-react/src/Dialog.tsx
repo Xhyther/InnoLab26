@@ -6,10 +6,12 @@ export function Details({
   title,
   onClose,
   children,
+  showFooterClose=true,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  showFooterClose?:boolean;
 }) {
   const panel = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -65,9 +67,9 @@ export function Details({
           </Button>
         </div>
         {children}
-        <Button className="mt-6" variant="secondary" onClick={onClose}>
+        {showFooterClose && <Button className="mt-6" variant="secondary" onClick={onClose}>
           Close
-        </Button>
+        </Button>}
       </section>
     </div>,document.body
   );

@@ -1,3 +1,5 @@
+import { passportFingerprint } from "./passport-data";
+import type { PassportProps, PassportReview } from "./FinancialPassport";
 import { upgradeSampleAccount } from "./loan-records";
 import { prepareBusinessForAi } from "./ai-request";
 import { useCallback, useEffect, useState, useRef } from "react";
@@ -61,6 +63,31 @@ export default function App() {
   const [isAsking,setIsAsking] = useState(false);
   const [aiError,setAiError] = useState("");
   const requestRef = useRef<AbortController | null>(null);
+  const [passportReview,setPassportReview] = useState<PassportReview|null>(null);
+  const [passportGenerating,setPassportGenerating] = useState(false);
+  const [passportError,setPassportError] = useState("");
+  const passportRequestRef=useRef<AbortController|null>(null);
+  const fingerprint=passportFingerprint(state);
+  useEffect(()=>()=>{passportRequestRef.current?.abort();},[]);
+  async function generatePassport() {
+    if(passportRequestRef.current || !state.preferences.leaContext)return;
+    const controller=new AbortController(), source=fingerprint;
+    passportRequestRef.current=controller;setPassportGenerating(true);setPassportError("");
+    const timer=setTimeout(()=>controller.abort("timeout"),65000);
+    try {
+      const response=await fetch("/api/passport",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,
+        body:JSON.stringify({business:prepareBusinessForAi(state),language:state.preferences.language})});
+      const data=await response.json() as {html?:unknown;error?:unknown};
+      if(!response.ok)throw new Error(typeof data.error === "string" ? data.error : "The AI review failed.");
+      if(typeof data.html !== "string" || !data.html.trim() || data.html.length>40000)throw new Error("The AI returned an invalid review.");
+      if(passportRequestRef.current===controller && passportFingerprint(state)===source)setPassportReview({fingerprint:source,html:data.html,generatedAt:new Date().toISOString()});
+    }catch(err){
+      if(passportRequestRef.current===controller && passportFingerprint(state)===source && (!controller.signal.aborted || controller.signal.reason==="timeout"))setPassportError(controller.signal.reason==="timeout" ? "The AI review timed out. Please retry." : err instanceof Error ? err.message : "Could not reach the AI server.");
+    }finally{
+      clearTimeout(timer);
+      if(passportRequestRef.current===controller){passportRequestRef.current=null;setPassportGenerating(false);}
+    }
+  }
   useEffect(() => () => { requestRef.current?.abort(); }, []);
   const closeModal = useCallback(() => setModal(null), []);
   useEffect(() => {
@@ -73,6 +100,9 @@ export default function App() {
     return () => window.removeEventListener("hashchange", change);
   }, []);
   function change(next: BusinessState) {
+    if(passportFingerprint(next)!==fingerprint) {
+      passportRequestRef.current?.abort();passportRequestRef.current=null;setPassportGenerating(false);setPassportError("");setPassportReview(null);
+    }
     if(next.preferences.leaContext !== state.preferences.leaContext) {
       requestRef.current?.abort(); requestRef.current=null; setIsAsking(false); setMessages([]); setAiError("");
     }
@@ -149,6 +179,7 @@ export default function App() {
     onReset: reset,
     isAsking,aiError,
   };
+  const passportProps:PassportProps={state,review:passportReview?.fingerprint===fingerprint ? passportReview : null,generating:passportGenerating,reportError:passportError,onGenerate:generatePassport,onEnableContext:()=>change({...state,preferences:{...state.preferences,leaContext:true}})};
   let content;
   switch (page) {
     case "transactions":
@@ -161,7 +192,7 @@ export default function App() {
       content = <Adviser {...workspace} messages={messages} />;
       break;
     case "passport":
-      content = <Passport {...workspace} />;
+      content = <Passport {...passportProps} />;
       break;
     case "settings":
       content = <Settings {...workspace} />;
@@ -197,7 +228,7 @@ export default function App() {
           <Landing onEnter={enter} notify={setToast} />
         )
       ) : route === "/app/report" ? (
-        <Report state={state} />
+        <Report {...passportProps} />
       ) : (
         <>
           <div inert={!!modal}>
@@ -375,3 +406,5 @@ export default function App() {
     </>
   );
 }
+
+

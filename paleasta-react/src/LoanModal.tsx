@@ -18,14 +18,14 @@ export function LoanModal({state,onChange,onClose}:{state:BusinessState;onChange
       onClose();
     } catch(err){setError(err instanceof Error?err.message:"Check the loan details.");}
   }
-  return <Details title="Record business loan" onClose={onClose}>
+  return <Details title="Record business loan" onClose={onClose} showFooterClose={false}>
     <div className="mb-5 flex items-center gap-3"><span className="icon-badge"><Icon name="inflow" /></span><p className="text-sm text-muted">Track borrowed funds and the next repayment.</p></div>
     <form className="space-y-4" onSubmit={submit}>
       <Select label="What are you recording?" value={kind} onChange={e=>setKind(e.target.value)}>
         <option value="new">New funds received · add cash inflow</option>
         <option value="existing">Existing balance · no new cash</option>
       </Select>
-      <p className="notice text-xs">{kind==="new"?"Net funds received are recorded as financing cash inflow, separate from sales. Scheduled repayments do not create expenses until you record a payment.":"Updates the loan register only. Money received earlier will not be added again."}</p>
+      <p className="notice text-xs">{kind==="new"?"Net funds received are recorded as financing cash inflow, separate from sales. Use Record loan payment separately when a repayment has been made.":"Updates the loan register only. Money received earlier will not be added again."}</p>
       {error&&<p className="error" role="alert">{error}</p>}
       <Field label="Lender / loan label" name="lender" required maxLength={80} placeholder="Use a label, not an account number" />
       <div className="grid gap-4 sm:grid-cols-2">

@@ -42,7 +42,7 @@ export function totals(transactions: Transaction[]) {
   return { inflow, outflow, balance: inflow - outflow,loanInflow,nonLoanInflow:inflow-loanInflow };
 }
 export function receiptCoverage(transactions: Transaction[]) {
-  const expenses = transactions.filter((t) => t.type === "outflow");
+  const expenses = transactions.filter((t) => t.type === "outflow" && t.cashKind !== "loan_repayment");
   return expenses.length
     ? Math.round(
         (expenses.filter((t) => t.evidence === "Receipt attached").length /
@@ -135,7 +135,7 @@ export function isBusinessState(value: unknown): value is BusinessState {
     (d.loans == null ||
       (Array.isArray(d.loans) &&
         d.loans.length <= 100 &&
-        d.loans.every(isLoan))) &&
+        d.loans.every(isLoan) && new Set(d.loans.map(l=>l.id)).size===d.loans.length)) &&
     Array.isArray(d.transactions) &&
     d.transactions.length <= 10000 &&
     d.transactions.every(
@@ -151,7 +151,11 @@ export function isBusinessState(value: unknown): value is BusinessState {
         cents(t.amountCents) &&
         evidence.includes(t.evidence) &&
         (t.receiptName === undefined || str(t.receiptName)) &&
-        (t.counterparty === undefined || str(t.counterparty)) && (t.loanId===undefined||str(t.loanId)) && (t.cashKind===undefined||(t.cashKind==="loan_disbursement"&&t.type==="inflow"&&str(t.loanId))),
+        (t.counterparty === undefined || str(t.counterparty)) && (t.loanId===undefined||str(t.loanId)) &&
+        (t.cashKind===undefined||(t.cashKind==="loan_disbursement"&&t.type==="inflow"&&str(t.loanId)&&!!t.loanId?.trim())||(t.cashKind==="loan_repayment"&&t.type==="outflow"&&str(t.loanId)&&!!t.loanId?.trim())) &&
+        (t.cashKind==="loan_repayment" ? !!t.loanPayment &&
+          [t.loanPayment.principalCents,t.loanPayment.interestCents].every(n=>Number.isSafeInteger(n)&&n>=0&&n<=100000000000) &&
+          t.loanPayment.principalCents+t.loanPayment.interestCents===t.amountCents : t.loanPayment===undefined),
     ) &&
     Array.isArray(d.products) &&
     d.products.length <= 10000 &&
@@ -206,10 +210,10 @@ export function isLoan(value: unknown): value is Loan {
     typeof l.lender === "string" &&
     l.lender.trim().length > 0 &&
     l.lender.length <= 80 &&
-    amount(l.outstandingCents) &&
+    (l.status==="paid" ? l.outstandingCents===0 : amount(l.outstandingCents)) &&
     amount(l.repaymentCents) &&
     ["monthly", "weekly"].includes(l.repaymentFrequency) &&
-    ["current", "overdue"].includes(l.status) &&
+    ["current", "overdue", "paid"].includes(l.status) &&
     date(l.nextDueDate) &&
     date(l.balanceAsOfDate)
   );

@@ -10,7 +10,8 @@ export type Mode = "inventory" | "inflow" | "outflow";
 export type Evidence = "Self-reported" | "Receipt attached" | "Owner-confirmed";
 export type Transaction = {
   loanId?: string;
-  cashKind?: "loan_disbursement";
+  cashKind?: "loan_disbursement" | "loan_repayment";
+  loanPayment?: { principalCents: number; interestCents: number };
   id: string;
   date: string;
   description: string;
@@ -79,5 +80,5 @@ export type Loan = {
   repaymentFrequency: "monthly" | "weekly";
   nextDueDate: string;
   balanceAsOfDate: string;
-  status: "current" | "overdue";
+  status: "current" | "overdue" | "paid";
 };

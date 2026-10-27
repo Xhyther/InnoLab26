@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { buildLeaRequest } from "../src/ai-request.ts";
+import { buildPassportRequest } from "../src/passport-request.ts";
 import { isBusinessState } from "../src/domain.ts";
 import type { BusinessState } from "../src/types.ts";
 
@@ -80,7 +81,8 @@ export async function handleApi(
       });
       return;
     }
-    if (path !== "/api/chat") throw new ApiError(404, "API route not found.");
+    const passport = path === "/api/passport";
+    if (!passport && path !== "/api/chat") throw new ApiError(404, "API route not found.");
     if (req.method !== "POST") throw new ApiError(405, "Use POST for chat.");
     if (!req.headers["content-type"]?.startsWith("application/json"))
       throw new ApiError(415, "Send an application/json request.");
@@ -88,6 +90,10 @@ export async function handleApi(
     if (!raw || typeof raw !== "object")
       throw new ApiError(400, "Invalid chat request.");
     const body = raw as Record<string, unknown>;
+    if (passport) {
+      if (!isBusinessState(body.business) || !body.business.preferences.leaContext) throw new ApiError(400, "Enable business context and supply valid records for an AI review.");
+      body.question = "Generate the Financial Passport review."; body.history = [];
+    }
     if (
       typeof body.question !== "string" ||
       !body.question.trim() ||
@@ -143,7 +149,7 @@ export async function handleApi(
             preferences: { language, reminder: "", leaContext: false },
           }
         : (body.business as BusinessState);
-    const request = buildLeaRequest(
+    const request = passport ? buildPassportRequest({ ...business, preferences: { ...business.preferences, language } }) : buildLeaRequest(
       { ...business, preferences: { ...business.preferences, language } },
       body.question,
       body.history,
@@ -244,3 +250,4 @@ export async function handleApi(
     else res.end();
   }
 }
+

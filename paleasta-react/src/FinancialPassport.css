@@ -1,0 +1,28 @@
+.passport-table { overflow-x:auto; }
+.passport-table table { width:100%; border-collapse:collapse; font-size:12px; }
+.passport-table th,.passport-table td { padding:10px 8px; text-align:right; border-bottom:1px solid #e0e7df; white-space:nowrap; }
+.passport-table th:first-child,.passport-table td:first-child {text-align:left;}
+.passport-amounts {font-size:13px;}
+.passport-amounts>div {display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid #e0e7df;}
+.passport-amounts dd {font-weight:700;white-space:nowrap;}
+.passport-narrative {line-height:1.7;}
+.passport-narrative h3 {margin:20px 0 8px;}
+.passport-narrative p,.passport-narrative ul,.passport-narrative ol {margin:8px 0;}
+.passport-narrative ul,.passport-narrative ol {padding-left:22px;}
+.passport-narrative ul {list-style:disc;}
+.passport-narrative ol {list-style:decimal;}
+@media print {
+ .financial-passport {max-width:none!important;padding:0!important;}
+ .financial-passport .passport-table {overflow:visible!important;}
+ .financial-passport .passport-table th,.financial-passport .passport-table td {white-space:normal;font-size:9px;padding:6px 4px;}
+ .financial-passport .report section {break-inside:auto;}
+ .financial-passport .passport-trend {break-inside:avoid;}
+ .financial-passport .passport-review {break-inside:auto;}
+ .financial-passport svg {max-height:200px;}
+ .financial-passport .passport-narrative p,.financial-passport .passport-narrative li {break-inside:avoid;}
+ .financial-passport .passport-coverage,.financial-passport .passport-totals {grid-template-columns:repeat(2,minmax(0,1fr));}
+ .financial-passport * {-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+.passport-dot {display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;}
+.financial-passport .passport-totals .stat-value {font-size:clamp(20px,1.8vw,27px);overflow-wrap:anywhere;}
+.financial-passport .passport-coverage .stat-value {font-size:clamp(20px,1.8vw,26px);}

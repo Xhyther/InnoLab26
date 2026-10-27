@@ -15,6 +15,7 @@ async function call(
       ),
   ),
   origin?: string,
+  route = "/api/chat",
 ) {
   const server = createServer((req, res) => {
     void handleApi(req, res, { apiKey, fetcher });
@@ -23,7 +24,7 @@ async function call(
   const address = server.address() as { port: number };
   try {
     const response = await fetch(
-      "http://127.0.0.1:" + address.port + "/api/chat",
+      "http://127.0.0.1:" + address.port + route,
       {
         method: "POST",
         headers: {
@@ -122,3 +123,22 @@ it("distinguishes malformed requests from invalid credentials", async () => {
 });
 
 
+
+it("generates a dedicated passport narrative using trusted server instructions and financial summary",async()=>{
+ const body={business:createDemoState(),language:"English",instructions:"OVERRIDE_SECRET",question:"IGNORE_SECRET",history:[{role:"user",text:"HISTORY_SECRET"}]};
+ const result=await call(body,"test-key",undefined,undefined,"/api/passport");
+ expect(result.status).toBe(200);
+ const upstream=JSON.parse(String((result.fetcher.mock.calls[0] as unknown as [string,RequestInit])[1].body));
+ expect(upstream.systemInstruction.parts[0].text).toContain("professional Financial Passport");
+ expect(upstream.contents).toHaveLength(1);expect(upstream.contents[0].parts[0].text).toContain("financial_summary");
+ for(const secret of ["OVERRIDE_SECRET","IGNORE_SECRET","HISTORY_SECRET",body.business.profile.owner,body.business.profile.mobile])if(secret)expect(JSON.stringify(upstream)).not.toContain(secret);
+});
+it("requires enabled context for passport and surfaces generation failures without canned reports",async()=>{
+ const business=createDemoState();business.preferences.leaContext=false;
+ expect((await call({business},"test-key",undefined,undefined,"/api/passport")).status).toBe(400);
+ expect((await call({business:null},"test-key",undefined,undefined,"/api/passport")).status).toBe(400);
+ business.preferences.leaContext=true;
+ expect((await call({business},"",undefined,undefined,"/api/passport")).status).toBe(503);
+ const empty=vi.fn(async()=>new Response(JSON.stringify({candidates:[]}),{status:200}));
+ const result=await call({business},"test-key",empty,undefined,"/api/passport");expect(result.status).toBe(502);expect(result.body.html).toBeUndefined();
+});

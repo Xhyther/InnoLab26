@@ -41,7 +41,7 @@ export const AI_SITUATIONS = [
     title: "New loan comparison",
     question: "Should I take another business loan or wait?",
     guidance:
-      "Review existing debt and commitments. Ask for actual lender quotes, fees, interest basis and schedule. Do not invent rates, approval odds or creditworthiness.",
+      "Keep the stated borrowing purpose and amount from the conversation. Compare a funding gap and proposed installments with operating surplus and existing commitments; principal alone does not establish affordability. Ask only for the most useful missing loan term, without inventing rates or approval odds.",
   },
   {
     id: "passport",

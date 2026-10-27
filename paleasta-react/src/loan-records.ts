@@ -10,11 +10,12 @@ export function daysUntilDue(loan: Loan, asOf=todayInManila()) {
   return Math.round((Date.parse(loan.nextDueDate+"T00:00:00Z")-Date.parse(asOf+"T00:00:00Z"))/86400000);
 }
 export function dueLabel(loan: Loan, asOf=todayInManila()) {
+  if(loan.status==="paid"||loan.outstandingCents===0)return "Paid off";
   const days=daysUntilDue(loan,asOf);
   return days<0 ? "Overdue by "+Math.abs(days)+" days" : days===0 ? "Due today" : days===1 ? "Due tomorrow" : "Due in "+days+" days";
 }
 export function upcomingLoans(loans: Loan[] | null | undefined, asOf=todayInManila()) {
-  return (loans ?? []).filter(l=>{const d=daysUntilDue(l,asOf);return d>=0&&d<=7;}).sort((a,b)=>a.nextDueDate.localeCompare(b.nextDueDate));
+  return (loans ?? []).filter(l=>{const d=daysUntilDue(l,asOf);return l.status!=="paid"&&l.outstandingCents>0&&d>=0&&d<=7;}).sort((a,b)=>a.nextDueDate.localeCompare(b.nextDueDate));
 }
 export function recordLoan(state:BusinessState,loan:Loan,receipt?:{amountCents:number;date:string;payment:string}):BusinessState {
   if(!isLoan(loan))throw new Error("Check the loan dates, amounts and lender label.");

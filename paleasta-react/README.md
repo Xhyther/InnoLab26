@@ -68,7 +68,7 @@ Landing and prototype account forms; Overview with a line graph; LEA chat; searc
 
 Inflow uses a green rising graph. Outflow uses a warm-red falling graph across summaries, records, details and entry controls. Brief CSS animations respect reduced-motion preferences.
 
-Initial fictional sample records cover October 2026: ₱90,000 inflows (₱45,000 other receipts + ₱45,000 loan proceeds), ₱8,500 outflows, ₱81,500 net movement and six products. Two sample loans have ₱3,500 due October 30 and ₱1,500 due November 2. Recognized original sample accounts upgrade once while retaining custom entries; unrelated accounts are preserved. The Overview line chart is illustrative; cards and records update from local data.
+The fictional sample covers May–October 2026 with 317 transactions across 154 recorded dates: ₱334,946.00 inflows (including ₱45,000.00 loan proceeds), ₱161,944.00 outflows and a ₱173,002.00 recorded balance. Six products have ₱4,816.00 recorded cost. Two sample loans have ₱3,500.00 due October 30 and ₱1,500.00 due November 2. The line chart uses actual recorded monthly totals. Recognized sample accounts expand once while retaining custom entries and existing loan choices; unrelated accounts are preserved.
 
 ## Initialization from an empty folder
 
@@ -145,7 +145,7 @@ Original design: [PaLEAsta! Official](https://www.figma.com/design/arpijplKJHpB8
 
 ## If you see “Use POST for chat”
 
-Do not open `/api/chat` in the browser address bar. That sends a GET request to an API endpoint. Open the app's Local URL from Vite, choose **LEA AI Adviser**, type a question and click **Ask LEA**. The form sends POST with the required JSON. After changing `.env`, restart the dev server.
+Do not open `/api/chat` in the browser address bar. That sends a GET request to an API endpoint. Open the app's Local URL from Vite, choose **LEA AI Adviser**, type a question and click the circular send arrow (or press Enter). The form sends POST with the required JSON. After changing `.env`, restart the dev server.
 
 ## Gemini project free-tier access is unavailable
 
@@ -155,8 +155,16 @@ For an ineligible project, Google's documented way to enable generation is an ac
 
 Official explanation: [Gemini project restricted or unavailable](https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable).
 
-## If you see “Use POST for chat”
 
-Do not open `/api/chat` in the browser address bar. That sends a GET request to an API endpoint. Open the app's Local URL from Vite, choose **LEA AI Adviser**, type a question and click **Ask LEA**. The form sends POST with the required JSON. After changing `.env`, restart the dev server.
+## Latest prototype behavior
 
-The adviser has separate chat and context scroll panes. Question chips fill the composer; LEA’s mascot cycles through thinking, pondering and computing while an API response is pending. Reduced motion preferences are respected.
+The landing page follows the supplied references and keeps local signup in an accessible dialog. The adviser has a rounded, auto-growing composer: Enter sends, Shift+Enter adds a line. The financial-record note and send arrow share its bottom row. Chat and context scroll independently; LEA’s creature mascot cycles through thinking, pondering and computing during an API request.
+
+LEA uses the recorded balance for ordinary planning, assuming a ₱0 opening balance and complete recorded cash movements across all payment channels. It does not ask the owner to re-enter cash merely because the balance is not bank-verified. Exact formatted PHP totals and six monthly summaries are sent alongside centavos to reduce unit mistakes. Upcoming installments are reserved once; total loan principal is not deducted again. Production accounting will need opening balances and reconciliation.
+
+Figma: https://www.figma.com/design/arpijplKJHpB8lPDAK6pvY/PaLEAsta----Official?node-id=23-2
+Presentation examples: https://www.figma.com/design/arpijplKJHpB8lPDAK6pvY/PaLEAsta----Official?node-id=109-215
+
+## Conversational adviser
+
+LEA answers conversationally instead of repeating an answer/evidence/missing-information/next-steps report. Short follow-ups keep their purpose and amount from recent conversation. It asks at most one focused question, matches the owner’s language naturally, and handles hospital-funding discussions as financing questions rather than offering medical or lifestyle advice. Loan affordability needs repayment terms and reliable cash surplus; principal or store size alone is insufficient. HTML sanitization and the recorded-balance planning behavior are preserved. See AI-PROMPT.md for the current instructions.

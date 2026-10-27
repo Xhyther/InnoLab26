@@ -167,7 +167,7 @@ export function Select({
   return (
     <label className="field">
       <span>{label}</span>
-      <select {...props}>{children}</select>
+      <select aria-label={label} {...props}>{children}</select>
     </label>
   );
 }
